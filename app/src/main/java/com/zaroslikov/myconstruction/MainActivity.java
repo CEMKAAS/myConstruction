@@ -1,20 +1,24 @@
 package com.zaroslikov.myconstruction;
 
+import android.database.Cursor;
 import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.zaroslikov.myconstruction.databinding.ActivityMainBinding;
+import com.zaroslikov.myconstruction.db.MyDatabaseHelper;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private MyDatabaseHelper myDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        myDB = new MyDatabaseHelper(this);
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -34,4 +39,23 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
     }
 
+    public void set() {
+        Cursor cursor = myDB.readProject();
+
+        if (cursor.getCount() == 0) {
+            replaceFragment(new AddProjectFragment());
+        } else if (cursor.getCount() == 1) {
+            replaceFragment(new WarehouseFragment());
+        } else {
+
+        }
+    }
+
+    //Переходим на фрагмент
+    private void replaceFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.conteiner, fragment, "visible_fragment")
+                .addToBackStack(null)
+                .commit();
+    }
 }
