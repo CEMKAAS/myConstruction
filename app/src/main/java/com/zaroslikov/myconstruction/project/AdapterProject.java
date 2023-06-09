@@ -23,21 +23,19 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public class AdapterProject  extends RecyclerView.Adapter<HomeAdapterIncubator.ViewHolder> {
-    private ArrayList id, name, type, data, arhive;
+public class AdapterProject  extends RecyclerView.Adapter<AdapterProject.ViewHolder> {
+    private ArrayList id, name, data;
     private long diff;
     private Listener listener;
 
     public static interface Listener {
-        public void onClick(int position, String name, String type, String data, String id);
+        public void onClick(int position, String name, String data, int id);
     }
 
-    public HomeAdapterIncubator(ArrayList idIncubator, ArrayList nameIncubator, ArrayList typeIncubator, ArrayList dataIncubator, ArrayList arhiveIncubator) {
+    public AdapterProject(ArrayList idIncubator, ArrayList nameIncubator, ArrayList dataIncubator) {
         this.id = idIncubator;
         this.name = nameIncubator;
-        this.type = typeIncubator;
         this.data = dataIncubator;
-        this.arhive = arhiveIncubator;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -51,7 +49,7 @@ public class AdapterProject  extends RecyclerView.Adapter<HomeAdapterIncubator.V
 
     @NonNull
     @Override
-    public HomeAdapterIncubator.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AdapterProject.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         MaterialCardView cv = (MaterialCardView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.card_captioned_image, parent, false);
         return new ViewHolder(cv);
@@ -63,27 +61,29 @@ public class AdapterProject  extends RecyclerView.Adapter<HomeAdapterIncubator.V
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    public void onBindViewHolder(@NonNull HomeAdapterIncubator.ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
+    public void onBindViewHolder(@NonNull AdapterProject.ViewHolder holder, @SuppressLint("RecyclerView") final int position) {
 
         MaterialCardView cardView = holder.cardView;
 
         ImageView imageView = (ImageView) cardView.findViewById(R.id.info_image);
+
         //Установка картинки в карту
         Drawable drawable = null;
-        if ("Курицы".equals(type.get(position))) {
-            drawable = cardView.getResources().getDrawable(R.drawable.chicken);
-        } else if ("Гуси".equals(type.get(position))) {
-            drawable = cardView.getResources().getDrawable(R.drawable.external_goose_birds_icongeek26_outline_icongeek26);
-        } else if ("Перепела".equals(type.get(position))) {
-            drawable = cardView.getResources().getDrawable(R.drawable.quail);
-        } else if ("Утки".equals(type.get(position))) {
-            drawable = cardView.getResources().getDrawable(R.drawable.duck);
-        } else if ("Индюки".equals(type.get(position))) {
-            drawable = cardView.getResources().getDrawable(R.drawable.turkeycock);
-        }
+//        if ("Курицы".equals(type.get(position))) {
+//            drawable = cardView.getResources().getDrawable(R.drawable.chicken);
+//        } else if ("Гуси".equals(type.get(position))) {
+//            drawable = cardView.getResources().getDrawable(R.drawable.external_goose_birds_icongeek26_outline_icongeek26);
+//        } else if ("Перепела".equals(type.get(position))) {
+//            drawable = cardView.getResources().getDrawable(R.drawable.quail);
+//        } else if ("Утки".equals(type.get(position))) {
+//            drawable = cardView.getResources().getDrawable(R.drawable.duck);
+//        } else if ("Индюки".equals(type.get(position))) {
+//            drawable = cardView.getResources().getDrawable(R.drawable.turkeycock);
+//        }
 
         imageView.setImageDrawable(drawable);
         imageView.setContentDescription("22");
+
 
         Calendar calendar = Calendar.getInstance();
         String dateBefore22 = String.valueOf(data.get(position));
@@ -107,7 +107,7 @@ public class AdapterProject  extends RecyclerView.Adapter<HomeAdapterIncubator.V
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.onClick(position, String.valueOf(name.get(position)), String.valueOf(type.get(position)), String.valueOf(data.get(position)), String.valueOf(id.get(position)));
+                    listener.onClick(position, String.valueOf(name.get(position)), String.valueOf(data.get(position)), String.valueOf(id.get(position)));
                 }
             }
         });

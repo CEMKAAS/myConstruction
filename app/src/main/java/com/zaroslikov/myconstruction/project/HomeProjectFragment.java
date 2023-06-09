@@ -15,6 +15,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.zaroslikov.myconstruction.AddProjectFragment;
 import com.zaroslikov.myconstruction.R;
+import com.zaroslikov.myconstruction.WarehouseFragment;
 import com.zaroslikov.myconstruction.db.MyDatabaseHelper;
 
 import java.util.ArrayList;
@@ -23,7 +24,9 @@ public class HomeProjectFragment extends Fragment implements View.OnClickListene
 
     private MyDatabaseHelper myDB;
     private RecyclerView recyclerView;
-    private ArrayList<String> id, name, data, status;
+    private ArrayList<String> name, data;
+    private ArrayList<Integer> id;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -41,22 +44,21 @@ public class HomeProjectFragment extends Fragment implements View.OnClickListene
         id = new ArrayList<>();
         name = new ArrayList<>();
         data = new ArrayList<>();
-        status = new ArrayList<>();
 
         recyclerView = layout.findViewById(R.id.recyclerView);
 
         storeDataInArrays();
 
-        AdapterProject adapterProject = new AdapterProject(id, name, data, status);
-        recyclerView.setAdapter(adapterProject );
+        AdapterProject adapterProject = new AdapterProject(id, name, data);
+        recyclerView.setAdapter(adapterProject);
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         recyclerView.setLayoutManager(layoutManager);
 
 
-        adapterProject.setListener(new AdapterProject().Listener() {
+        adapterProject.setListener(new AdapterProject.Listener() {
             @Override
-            public void onClick(int position, String name, String type, String data, String id) {
-                addChart(position, name, type, data, id);
+            public void onClick(int position, String name, String data, int id) {
+
             }
         });
 
@@ -74,20 +76,18 @@ public class HomeProjectFragment extends Fragment implements View.OnClickListene
     }
 
     void storeDataInArrays() {
-        Cursor cursor = myDB.readAllDataIncubator();
-        if (cursor.getCount() == 0) {
-            cursor.close();
-        } else {
+        Cursor cursor = myDB.readProject();
+
+        if (cursor.getCount() != 0) {
             while (cursor.moveToNext()) {
-                if (cursor.getString(8).equals("0")) {
-                    id.add(cursor.getString(0));
+                if (cursor.getInt(4) == 1) {
+                    id.add(cursor.getInt(0));
                     name.add(cursor.getString(1));
-                    type.add(cursor.getString(2));
-                    data.add(cursor.getString(3));
+                    data.add(cursor.getString(2));
                 }
             }
-            cursor.close();
         }
+        cursor.close();
     }
 
     public void onClickButton(View view, Fragment fragment) {
@@ -97,18 +97,17 @@ public class HomeProjectFragment extends Fragment implements View.OnClickListene
                 .commit();
     }
 
-    public void addChart(int position, String name, String type, String data, String id) {
-        NowIncubatorFragment incubatorMenuFragment = new NowIncubatorFragment();
+    public void addChart(int position, String name, String type, String data, int id) {
+        WarehouseFragment warehouseFragment = new WarehouseFragment();
 
         Bundle bundle = new Bundle();
         bundle.putString("name", name);
-        bundle.putString("type", type);
-        bundle.putString("data", data);
-        bundle.putString("id", id);
-        incubatorMenuFragment.setArguments(bundle);
+        bundle.putString("date", data);
+        bundle.putInt("id", id);
+        warehouseFragment.setArguments(bundle);
 
         getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.conteiner, incubatorMenuFragment, "visible_fragment")
+                .replace(R.id.conteiner, warehouseFragment, "visible_fragment")
                 .addToBackStack(null)
                 .commit();
 

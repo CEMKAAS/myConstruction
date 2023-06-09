@@ -10,6 +10,8 @@ import android.util.Log;
 public class MyDatabaseHelper extends SQLiteOpenHelper {
     private Context context;
 
+    //TODO Включаем внешний ключ
+
     public MyDatabaseHelper(Context context) {
         super(context, MyConstanta.DB_NAME, null, MyConstanta.DB_VERSION);
         this.context = context;
@@ -51,7 +53,44 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public Cursor readProduct() {
+        String query = "SELECT * FROM " + MyConstanta.TABLE_NAME_PRODUCT;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor = db.rawQuery(query, null);
+        }
+        return cursor;
+    }
+
+    public Cursor product (String nameTable,String nameCount, String nameProduct) {
+
+        String query = "SELECT * FROM " + MyConstanta.TABLE_NAME_PRODUCT;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor = db.rawQuery(query, null);
+        }
+        return cursor;
 
 
+        SELECT *
+                FROM
+        KEY_COLUMN_USAGE
+                WHERE
+        REFERENCED_TABLE_NAME = 'X'
+        AND REFERENCED_COLUMN_NAME = 'X_id';
+//        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor cursor = null;
+//        if (db != null) {
+//            cursor = db.query(nameTable,
+//                    null,
+//                    null, null,
+//                    null, null, null);
+//        }
+//        return cursor;
+    }
 
 }

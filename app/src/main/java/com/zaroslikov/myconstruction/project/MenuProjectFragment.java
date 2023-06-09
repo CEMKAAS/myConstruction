@@ -29,8 +29,8 @@ public class MenuProjectFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_menu_project, container, false);
 
         //убириаем фаб кнопку
-        ExtendedFloatingActionButton fab = (ExtendedFloatingActionButton) getActivity().findViewById(R.id.extended_fab);
-        fab.setVisibility(View.GONE);
+//        ExtendedFloatingActionButton fab = (ExtendedFloatingActionButton) getActivity().findViewById(R.id.extended_fab);
+//        fab.setVisibility(View.GONE);
 
         //настройка верхнего меню
         MaterialToolbar appBar = getActivity().findViewById(R.id.topAppBar);

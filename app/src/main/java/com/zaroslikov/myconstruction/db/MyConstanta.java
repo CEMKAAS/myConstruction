@@ -49,7 +49,7 @@ public class MyConstanta {
             + FOREIGNKEYSALE + " INTEGER,"
             + "FOREIGN KEY (" + FOREIGNKEYADD + ") REFERENCES "
             + TABLE_NAME_PRODUCT + "(" + _ID + ")"
-            + "FOREIGN KEY (" + FOREIGNKEYADD + ") REFERENCES "
+            + "FOREIGN KEY (" + FOREIGNKEYSALE + ") REFERENCES "
             + TABLE_NAME_PRODUCT + "(" + _ID + ")"
             +")";
 
