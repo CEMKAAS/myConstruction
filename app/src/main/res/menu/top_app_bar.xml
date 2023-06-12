@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/delete"
+        android:id="@+id/deleteAll"
         android:icon="@drawable/baseline_delete_24"
         android:title="Удалить"
         android:contentDescription="Удалить"
@@ -17,13 +17,7 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/setting"
-        android:contentDescription="Настройка"
-        android:title="Настройка"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/more"
+        android:id="@+id/moreAll"
         android:contentDescription="Информация"
         android:title="Информация"
         app:showAsAction="never" />

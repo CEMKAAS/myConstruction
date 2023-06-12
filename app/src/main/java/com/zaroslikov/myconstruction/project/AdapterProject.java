@@ -100,14 +100,14 @@ public class AdapterProject  extends RecyclerView.Adapter<AdapterProject.ViewHol
         }
 
         TextView textView = (TextView) cardView.findViewById(R.id.name);
-        textView.setText(String.valueOf(name.get(position)));// имя инкубатора
+        textView.setText(String.valueOf(name.get(position)));// имя проекта
         TextView textView1 = (TextView) cardView.findViewById(R.id.dayEnd);
         textView1.setText("Идет " + String.valueOf(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)) + " день ");//Какой день
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.onClick(position, String.valueOf(name.get(position)), String.valueOf(data.get(position)), String.valueOf(id.get(position)));
+                    listener.onClick(position, String.valueOf(name.get(position)), String.valueOf(data.get(position)), (Integer) id.get(position));
                 }
             }
         });

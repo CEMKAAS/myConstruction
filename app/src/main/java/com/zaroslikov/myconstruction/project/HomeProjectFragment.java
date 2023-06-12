@@ -20,7 +20,7 @@ import com.zaroslikov.myconstruction.db.MyDatabaseHelper;
 
 import java.util.ArrayList;
 
-public class HomeProjectFragment extends Fragment implements View.OnClickListener {
+public class HomeProjectFragment extends Fragment {
 
     private MyDatabaseHelper myDB;
     private RecyclerView recyclerView;
@@ -33,7 +33,14 @@ public class HomeProjectFragment extends Fragment implements View.OnClickListene
         View layout = inflater.inflate(R.layout.fragment_home_project, container, false);
 
         ExtendedFloatingActionButton fab = (ExtendedFloatingActionButton) getActivity().findViewById(R.id.extended_fab);
-        fab.setOnClickListener(this);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickButton(new AddProjectFragment());
+            }
+        });
+
+
         fab.show();
         fab.setText("Добавить");
         fab.setIconResource(R.drawable.baseline_add_24);
@@ -58,29 +65,20 @@ public class HomeProjectFragment extends Fragment implements View.OnClickListene
         adapterProject.setListener(new AdapterProject.Listener() {
             @Override
             public void onClick(int position, String name, String data, int id) {
-
+                inProject(position, name,data,id);
             }
         });
 
         return layout;
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.extended_fab:
-                onClickButton(v, new AddProjectFragment());
-                break;
-
-        }
-    }
 
     void storeDataInArrays() {
         Cursor cursor = myDB.readProject();
 
         if (cursor.getCount() != 0) {
             while (cursor.moveToNext()) {
-                if (cursor.getInt(4) == 1) {
+                if (cursor.getInt(4) == 0) {
                     id.add(cursor.getInt(0));
                     name.add(cursor.getString(1));
                     data.add(cursor.getString(2));
@@ -90,14 +88,14 @@ public class HomeProjectFragment extends Fragment implements View.OnClickListene
         cursor.close();
     }
 
-    public void onClickButton(View view, Fragment fragment) {
+    public void onClickButton(Fragment fragment) {
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.conteiner, fragment, "visible_fragment")
                 .addToBackStack(null)
                 .commit();
     }
 
-    public void addChart(int position, String name, String type, String data, int id) {
+    public void inProject(int position, String name, String data, int id) {
         WarehouseFragment warehouseFragment = new WarehouseFragment();
 
         Bundle bundle = new Bundle();

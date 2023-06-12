@@ -1,17 +1,23 @@
 package com.zaroslikov.myconstruction;
 
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.View;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.zaroslikov.myconstruction.databinding.ActivityMainBinding;
 import com.zaroslikov.myconstruction.db.MyDatabaseHelper;
 import com.zaroslikov.myconstruction.project.MenuProjectFragment;
@@ -20,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private MyDatabaseHelper myDB;
+    private ExtendedFloatingActionButton fab;
+    private MaterialToolbar appBar;
+    private int position = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +37,94 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         myDB = new MyDatabaseHelper(this);
+
+        fab = findViewById(R.id.extended_fab);
+        fab.setVisibility(View.GONE);
+
+        appBar = findViewById(R.id.topAppBar);
+        // AppBar
+
+        appBar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+//                case R.id.menu:
+//                    replaceFragment(new InFragment());
+//                    appBar.setTitle("Информация");
+//                    fab.hide();
+//                    fab.setVisibility(View.GONE);
+//                    break;
+//
+//                case R.id.deleteAll:
+//                    beginIncubator();
+//                    break;
+            }
+            return true;
+        });
+
+        set();
+        binding.navView.setVisibility(View.GONE);
+//        binding.navView.setOnNavigationItemSelectedListener(item -> {
+//            position = item.getItemId();
+//            switch (position) {
+//
+//                case R.id.warehouse_button:
+//                    replaceFragment(new WarehouseFragment());
+//                    appBar.setTitle("Мой Склад");
+//                    fab.hide();
+//                    fab.setVisibility(View.GONE);
+//                    break;
+//
+//                case R.id.finance_button:
+//                    replaceFragment(new FinanceFragment());
+//                    appBar.setTitle("Мои Финансы");
+//                    fab.show();
+//                    fab.setText("Цена");
+//                    fab.setIconResource(R.drawable.ic_action_price);
+//                    fab.getIcon();
+//
+//                    fab.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            replaceFragment(new PriceFragment());
+//                            appBar.setTitle("Моя Цена");
+//                            fab.hide();
+//                            fab.setVisibility(View.GONE);
+//                        }
+//                    });
+//                    break;
+//
+//                case R.id.add_button:
+//                    replaceFragment(new AddFragment());
+//                    fba(new AddManagerFragment());
+//                    break;
+//
+//                case R.id.sale_button:
+//                    replaceFragment(new SaleFragment());
+//                    fba(new AddManagerFragment());
+//                    break;
+//
+//                case R.id.expenses_button:
+//                    replaceFragment(new ExpensesFragment());
+//                    fba(new AddManagerFragment());
+//                    break;
+//
+//            }
+//            return true;
+//        });
+
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            public void onBackStackChanged() {
+                Fragment fragment = getSupportFragmentManager().findFragmentByTag("visible_fragment");
+                if (fragment instanceof WarehouseFragment) {
+                    binding.navView.setVisibility(View.VISIBLE);
+                }
+                if (fragment instanceof MenuProjectFragment) {
+                    binding.navView.setVisibility(View.GONE);
+                }
+                binding.navView.getMenu().getItem(position).setChecked(true);
+            }
+        }
+        );
+
 
 //        BottomNavigationView navView = findViewById(R.id.nav_view);
 //        // Passing each menu ID as a set of Ids because each
@@ -58,5 +155,27 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.conteiner, fragment, "visible_fragment")
                 .addToBackStack(null)
                 .commit();
+    }
+
+    public void beginIncubator() {
+
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
+        builder.setTitle("Удаляем все ?");
+        builder.setMessage("Вы уверены, что хотите удалить все проекты, включая архивные?");
+        builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //
+                myDB.deleteAllData();
+                replaceFragment(new WarehouseFragment());
+            }
+        });
+        builder.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.create().show();
     }
 }

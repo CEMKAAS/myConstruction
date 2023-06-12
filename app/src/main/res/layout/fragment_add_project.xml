@@ -8,100 +8,50 @@
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:id="@+id/name_project"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:hint="Назавание проекта"
+            app:endIconMode="custom"
+            app:errorEnabled="true"
+            app:helperText="Укажите название проекта"
+            app:helperTextEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionGo"
+                android:inputType="text" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!--        <com.google.android.material.textfield.TextInputLayout-->
-        <!--            android:id="@+id/name_incubator"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginLeft="5dp"-->
-        <!--            android:hint="Назавание инкубатора"-->
-        <!--            app:endIconMode="custom"-->
-        <!--            app:errorEnabled="true"-->
-        <!--            app:helperText="Укажите название инкубатора"-->
-        <!--            app:helperTextEnabled="true">-->
-
-        <!--            <com.google.android.material.textfield.TextInputEditText-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:imeOptions="actionGo"-->
-        <!--                android:inputType="text" />-->
-
-        <!--        </com.google.android.material.textfield.TextInputLayout>-->
-
-
-        <!--        <com.google.android.material.textfield.TextInputLayout-->
-        <!--            android:id="@+id/menu"-->
-        <!--            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginLeft="5dp"-->
-        <!--            android:hint="Тип птицы"-->
-        <!--            app:helperText="Выберите тип птицы">-->
-
-        <!--            <AutoCompleteTextView-->
-        <!--                android:id="@+id/animals_spiner"-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:inputType="none"-->
-        <!--                app:simpleItems="@array/birsd" />-->
-        <!--        </com.google.android.material.textfield.TextInputLayout>-->
-
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/date"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:hint="Дата"
+            app:endIconDrawable="@drawable/baseline_calendar_month_24"
+            app:endIconMode="custom"
+            app:errorEnabled="true"
+            app:helperText="Укажите дату"
+            app:helperTextEnabled="true">
 
-            <!--            <com.google.android.material.textfield.TextInputLayout-->
-            <!--                android:id="@+id/data"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_marginLeft="5dp"-->
-            <!--                android:hint="Дата"-->
-            <!--                app:endIconDrawable="@drawable/baseline_calendar_month_24"-->
-            <!--                app:endIconMode="custom"-->
-            <!--                app:errorEnabled="true"-->
-            <!--                app:helperText="Укажите дату"-->
-            <!--                app:helperTextEnabled="true">-->
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionGo"
+                android:inputType="date" />
 
-            <!--                <com.google.android.material.textfield.TextInputEditText-->
-            <!--                    android:layout_width="match_parent"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:imeOptions="actionGo"-->
-            <!--                    android:inputType="date" />-->
-
-            <!--            </com.google.android.material.textfield.TextInputLayout>-->
-
-            <!--            <com.google.android.material.textfield.TextInputLayout-->
-            <!--                android:id="@+id/eggAll"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_gravity="right"-->
-            <!--                android:layout_marginLeft="5dp"-->
-            <!--                android:hint="Количество"-->
-            <!--                app:endIconDrawable="@drawable/baseline_egg_24"-->
-            <!--                app:endIconMode="custom"-->
-            <!--                app:errorEnabled="true"-->
-            <!--                app:helperText="Укажите кол-во яиц"-->
-            <!--                app:helperTextEnabled="true"-->
-            <!--                app:suffixText="шт.">-->
-
-            <!--                <com.google.android.material.textfield.TextInputEditText-->
-            <!--                    android:layout_width="match_parent"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:imeOptions="actionGo"-->
-            <!--                    android:inputType="number" />-->
-            <!--            </com.google.android.material.textfield.TextInputLayout>-->
-
-        </LinearLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/begin"
