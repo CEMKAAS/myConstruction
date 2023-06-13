@@ -175,16 +175,33 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public Cursor readProductJoin(int propertyId){
-        String query = "SELECT * FROM "+ MyConstanta.TABLE_NAME + " s "
-                + " INNER JOIN " +  MyConstanta.TABLE_NAME_PRODUCT+ " p "
-                + "ON p." + MyConstanta.FOREIGNKEY + " =s." + MyConstanta._ID;
+        String query = "SELECT s."+ MyConstanta.TITLEPROJECT+
+                ", p." + MyConstanta.TITLEPRODUCT + ", p."+ MyConstanta.TITLEPRODUCT +
+                " FROM " + MyConstanta.TABLE_NAME + " s " +
+                "JOIN " + MyConstanta.TABLE_NAME_PRODUCT + " p " +
+                "ON s." + MyConstanta._ID  + " = " + " p." + MyConstanta.FOREIGNKEY +
+                " WHERE s." + MyConstanta._ID + "=?";
 
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = null;
         if (db != null) {
-            db.rawQuery(query,null);
-//            db.rawQuery(query, new String[]{String.valueOf(propertyId)});
+
+            cursor =  db.rawQuery(query, new String[]{String.valueOf(propertyId)});
+        }
+
+        return cursor;
+    }
+    public Cursor seachProduct(String productName){
+        String query = "SELECT s." + MyConstanta.TITLEPRODUCT +
+                " FROM " + MyConstanta.TABLE_NAME_PRODUCT + " s "+
+                "Where s." + MyConstanta.TABLE_NAME_PRODUCT + "=?";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor =  db.rawQuery(query, new String[]{productName});
         }
 
         return cursor;

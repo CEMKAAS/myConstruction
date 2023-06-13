@@ -62,17 +62,17 @@ public class MainActivity extends AppCompatActivity {
 
         set();
         binding.navView.setVisibility(View.GONE);
-//        binding.navView.setOnNavigationItemSelectedListener(item -> {
-//            position = item.getItemId();
-//            switch (position) {
-//
-//                case R.id.warehouse_button:
-//                    replaceFragment(new WarehouseFragment());
-//                    appBar.setTitle("Мой Склад");
-//                    fab.hide();
-//                    fab.setVisibility(View.GONE);
-//                    break;
-//
+        binding.navView.setOnNavigationItemSelectedListener(item -> {
+            position = item.getItemId();
+            switch (position) {
+
+                case R.id.warehouse_button:
+                    replaceFragment(new WarehouseFragment());
+                    appBar.setTitle("Мой Склад");
+                    fab.hide();
+                    fab.setVisibility(View.GONE);
+                    break;
+
 //                case R.id.finance_button:
 //                    replaceFragment(new FinanceFragment());
 //                    appBar.setTitle("Мои Финансы");
@@ -91,12 +91,12 @@ public class MainActivity extends AppCompatActivity {
 //                        }
 //                    });
 //                    break;
-//
-//                case R.id.add_button:
-//                    replaceFragment(new AddFragment());
+
+                case R.id.add_button:
+                    replaceFragment(new AddFragment());
 //                    fba(new AddManagerFragment());
-//                    break;
-//
+                    break;
+
 //                case R.id.sale_button:
 //                    replaceFragment(new SaleFragment());
 //                    fba(new AddManagerFragment());
@@ -106,10 +106,10 @@ public class MainActivity extends AppCompatActivity {
 //                    replaceFragment(new ExpensesFragment());
 //                    fba(new AddManagerFragment());
 //                    break;
-//
-//            }
-//            return true;
-//        });
+
+            }
+            return true;
+        });
 
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             public void onBackStackChanged() {
