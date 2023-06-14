@@ -46,11 +46,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_gravity="center">
+        android:layout_gravity="left">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/add_edit"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="Количество"
         app:helperText="Укажите кол-во товара"
@@ -74,14 +74,14 @@
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Ед."
         app:errorEnabled="true">
 
         <AutoCompleteTextView
             android:id="@+id/suffixSpiner"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:imeOptions="actionNext"
             android:inputType="text" />

@@ -63,15 +63,17 @@ public class MainActivity extends AppCompatActivity {
         set();
         binding.navView.setVisibility(View.GONE);
         binding.navView.setOnNavigationItemSelectedListener(item -> {
+            int ujh=0;
             position = item.getItemId();
-            switch (position) {
 
-                case R.id.warehouse_button:
-                    replaceFragment(new WarehouseFragment());
-                    appBar.setTitle("Мой Склад");
-                    fab.hide();
-                    fab.setVisibility(View.GONE);
-                    break;
+            if(position == R.id.warehouse_button){
+                replaceFragment(new WarehouseFragment());
+                appBar.setTitle("Мой Склад");
+                fab.hide();
+                fab.setVisibility(View.GONE);
+            } else if (position==R.id.add_button){
+                replaceFragment(new AddFragment());
+            }
 
 //                case R.id.finance_button:
 //                    replaceFragment(new FinanceFragment());
@@ -92,11 +94,6 @@ public class MainActivity extends AppCompatActivity {
 //                    });
 //                    break;
 
-                case R.id.add_button:
-                    replaceFragment(new AddFragment());
-//                    fba(new AddManagerFragment());
-                    break;
-
 //                case R.id.sale_button:
 //                    replaceFragment(new SaleFragment());
 //                    fba(new AddManagerFragment());
@@ -107,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
 //                    fba(new AddManagerFragment());
 //                    break;
 
-            }
             return true;
         });
 
@@ -116,9 +112,14 @@ public class MainActivity extends AppCompatActivity {
                 Fragment fragment = getSupportFragmentManager().findFragmentByTag("visible_fragment");
                 if (fragment instanceof WarehouseFragment) {
                     binding.navView.setVisibility(View.VISIBLE);
+                    position = 0;
                 }
                 if (fragment instanceof MenuProjectFragment) {
                     binding.navView.setVisibility(View.GONE);
+                }
+                if (fragment instanceof AddFragment) {
+                    binding.navView.setVisibility(View.VISIBLE);
+                    position = 2;
                 }
                 binding.navView.getMenu().getItem(position).setChecked(true);
             }
