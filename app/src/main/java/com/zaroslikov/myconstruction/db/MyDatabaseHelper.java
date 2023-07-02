@@ -97,41 +97,120 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         db.insert(MyConstanta.TABLE_NAME, null, cv);
     }
 
-    public void insertToDbProduct() {
+    public void insertToDbProduct(String name, String suffix) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(MyConstanta.TITLEPRODUCT, "Гвозди");
+        cv.put(MyConstanta.TITLEPRODUCT, name);
+        cv.put(MyConstanta.SUFFIX, suffix);
         db.insert(MyConstanta.TABLE_NAME_PRODUCT, null, cv);
     }
 
-    public Cursor readProductJoin(int propertyId){
-        String query = "SELECT s."+ MyConstanta.TITLEPROJECT+
-                ", p." + MyConstanta.TITLEPRODUCT + ", p."+ MyConstanta.TITLEPRODUCT +
-                " FROM " + MyConstanta.TABLE_NAME + " s " +
-                "JOIN " + MyConstanta.TABLE_NAME_PRODUCT + " p " +
-                "ON s." + MyConstanta._ID  + " = " + " p." + MyConstanta._ID +
-                " WHERE s." + MyConstanta._ID + "=?";
+    public void insertToDbProjectProduct( int idProject, int idProduct) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(MyConstanta.IDPROJECT, idProject);
+        cv.put(MyConstanta.IDPRODUCT, idProduct);
+        db.insert(MyConstanta.TABLE_NAME_PROJECT_PRODUCT, null, cv);
+    }
+
+
+
+    public void insertToDbProductAdd(double count, String category, double price, String date, int idPP) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(MyConstanta.QUANTITY,count);
+        cv.put(MyConstanta.CATEGORY, category);
+        cv.put(MyConstanta.PRICE, price);
+        cv.put(MyConstanta.DATE, date);
+        cv.put(MyConstanta.IDPP, idPP);
+        db.insert(MyConstanta.TABLE_NAME_ADD, null, cv);
+    }
+//    public Cursor readProductJoin(int propertyId){
+//        String query = "SELECT s."+ MyConstanta.TITLEPROJECT+
+//                ", p." + MyConstanta.TITLEPRODUCT + ", p."+ MyConstanta.TITLEPRODUCT +
+//                " FROM " + MyConstanta.TABLE_NAME + " s " +
+//                "JOIN " + MyConstanta.TABLE_NAME_PRODUCT + " p " +
+//                "ON s." + MyConstanta._ID  + " = " + " p." + MyConstanta._ID +
+//                " WHERE s." + MyConstanta._ID + "=?";
+//
+//        SQLiteDatabase db = this.getReadableDatabase();
+//
+//        Cursor cursor = null;
+//        if (db != null) {
+//
+//            cursor =  db.rawQuery(query, new String[]{String.valueOf(propertyId)});
+//        }
+//
+//        return cursor;
+//    }
+
+    public Cursor selectProductJoin(int propertyId, String productName, String tableName){
+        String query = "SELECT " + MyConstanta.TITLEPRODUCT+
+                ", sum(" + MyConstanta.QUANTITY + "), " + MyConstanta.SUFFIX +
+                " FROM " + tableName + " ad " +
+                "JOIN " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT + " pp " +
+                "ON pp." + MyConstanta._ID  + " = " + "ad." + MyConstanta.IDPP +
+
+                " JOIN " + MyConstanta.TABLE_NAME_PRODUCT + " prod " +
+                "ON prod." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPRODUCT +
+
+                " JOIN " + MyConstanta.TABLE_NAME + " proj " +
+                "ON proj." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPROJECT +
+
+                " WHERE proj." + MyConstanta._ID + "=? and " + MyConstanta.TITLEPRODUCT + "=?" +
+                "group by " + MyConstanta.TITLEPRODUCT + ", " + MyConstanta.SUFFIX;  ;
 
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = null;
         if (db != null) {
 
-            cursor =  db.rawQuery(query, new String[]{String.valueOf(propertyId)});
+            cursor =  db.rawQuery(query, new String[]{String.valueOf(propertyId),productName});
         }
 
         return cursor;
     }
+
+//    public Cursor seachProduct(String productName){
+//        String query = "SELECT s." + MyConstanta.TITLEPRODUCT +
+//                " FROM " + MyConstanta.TABLE_NAME_PRODUCT + " s "+
+//                "Where s." + MyConstanta.TABLE_NAME_PRODUCT + "=?";
+//
+//        SQLiteDatabase db = this.getReadableDatabase();
+//
+//        Cursor cursor = null;
+//        if (db != null) {
+//            cursor =  db.rawQuery(query, new String[]{productName});
+//        }
+//
+//        return cursor;
+//    }
+
+
     public Cursor seachProduct(String productName){
-        String query = "SELECT s." + MyConstanta.TITLEPRODUCT +
-                " FROM " + MyConstanta.TABLE_NAME_PRODUCT + " s "+
-                "Where s." + MyConstanta.TABLE_NAME_PRODUCT + "=?";
+        String query = "SELECT " + MyConstanta._ID + ", " + MyConstanta.TITLEPRODUCT +
+                " FROM " + MyConstanta.TABLE_NAME_PRODUCT +
+                " Where " + MyConstanta.TITLEPRODUCT + "=?";
 
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = null;
         if (db != null) {
             cursor =  db.rawQuery(query, new String[]{productName});
+        }
+
+        return cursor;
+    }
+
+    public Cursor seachPP(int idProject, int idProduct){
+        String query = "SELECT * FROM " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT +
+                " Where " + MyConstanta.IDPROJECT + "=? and " + MyConstanta.IDPRODUCT + "=?";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor =  db.rawQuery(query, new String[]{String.valueOf(idProject), String.valueOf(idProduct)});
         }
 
         return cursor;

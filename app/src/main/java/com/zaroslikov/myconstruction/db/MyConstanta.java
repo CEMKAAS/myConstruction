@@ -7,7 +7,7 @@ public class MyConstanta {
 
 
     public static final String TABLE_NAME = "Project"; // Название таблицы
-    public static final String _ID = "Id"; // Индефикатор НУМЕРАЦИЯ СТРОК
+    public static final String _ID = "id"; // Индефикатор НУМЕРАЦИЯ СТРОК
     public static final String TITLEPROJECT  = "NameProject"; // Название описание (название Проекта)
     public static final String DATEBEGINPROJECT = "DateBegin"; // Дата создания проекта
     public static final String DATEFINALPROJECT = "DateFinal"; // Дата создания проекта
@@ -52,9 +52,10 @@ public class MyConstanta {
 
     public static final String TABLE_STRUCTURE_PRODUCTPROJECT = "CREATE TABLE IF NOT EXISTS " +
             TABLE_NAME_PROJECT_PRODUCT + " (" + _ID + " INTEGER PRIMARY KEY, "
-            + TITLEPRODUCT + " TEXT,"
-            + IDPROJECT + " INTEGER FOREIGN KEY REFERENSES " + TABLE_NAME + " (" + _ID + "), "
-            + IDPRODUCT + " INTEGER FOREIGN KEY REFERENSES " + TABLE_NAME_PRODUCT + " (" + _ID + "))";
+            + IDPROJECT + " INTEGER, "
+            + IDPRODUCT + " INTEGER, "
+            +  " FOREIGN KEY (" + IDPROJECT  + ") REFERENCES " + TABLE_NAME + " (" + _ID + "), FOREIGN KEY (" +
+            IDPRODUCT + ") REFERENCES " + TABLE_NAME_PRODUCT + " (" + _ID + "))";
 
 
     public static final String TABLE_STRUCTURE_ADD = "CREATE TABLE IF NOT EXISTS " +
@@ -63,14 +64,14 @@ public class MyConstanta {
             + CATEGORY + " TEXT, "
             + PRICE + " REAL, "
             + DATE + " TEXT, "
-            + IDPP + " INTEGER FOREIGN KEY REFERENSES " + TABLE_NAME_PROJECT_PRODUCT + " (" + _ID + "))";
+            + IDPP + " INTEGER, FOREIGN KEY (" + IDPP + ") REFERENCES " + TABLE_NAME_PROJECT_PRODUCT + " (" + _ID + "))";
 
     public static final String TABLE_STRUCTURE_WRITEOFF = "CREATE TABLE IF NOT EXISTS " +
             TABLE_NAME_WRITEOFF + " (" + _ID + " INTEGER PRIMARY KEY, "
             + QUANTITY + " REAL, "
             + CATEGORY + " TEXT, "
             + DATE + " TEXT, "
-            + IDPP + " INTEGER FOREIGN KEY REFERENSES " + TABLE_NAME_PROJECT_PRODUCT + " (" + _ID + "))";
+            + IDPP + " INTEGER, FOREIGN KEY (" + IDPP + ") REFERENCES " + TABLE_NAME_PROJECT_PRODUCT + " (" + _ID + "))";
 
 
 

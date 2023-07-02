@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.zaroslikov.myconstruction.db.MyConstanta;
 import com.zaroslikov.myconstruction.db.MyDatabaseHelper;
 
 import java.util.ArrayList;
@@ -26,7 +27,9 @@ public class WarehouseFragment extends Fragment {
     public String dateProject;
     public int idProject;
     private RecyclerView recyclerView;
-    private List<String> productList;
+    private List<String> productAllList;
+    private List<Product> productList;
+
     private MyDatabaseHelper myDB;
 
     @Override
@@ -60,9 +63,9 @@ public class WarehouseFragment extends Fragment {
             idProject = bundle.getInt("id");
         }
 
-//Настройка листа
+        //Настройка листа
+        productAllList = new ArrayList();
         productList = new ArrayList();
-        myDB.insertToDbProduct();
         add();
 
         // Настраиваем адаптер
@@ -75,61 +78,57 @@ public class WarehouseFragment extends Fragment {
         return layout;
     }
 
-    public void add() {
-        Cursor cursor = myDB.readProductJoin(idProject);
-if (cursor != null) {
-    while (cursor.moveToNext()) {
-        String product = cursor.getString(1);
-        productList.add(product);
-    }
-}
-        cursor.close();
-    }
+    //Добавляем продукцию в список
 
-//    public Map add1() {
-//        Map<String, Double> tempList = new HashMap<>();
-//
-//        for (String product : productList) {
-//
-//            Cursor cursor = myDB.idProduct1(MyConstanta.TABLE_NAME, MyConstanta.TITLE, product);
-//
-//            if (cursor != null && cursor.getCount() != 0) {
-//
-//                while (cursor.moveToNext()) {
-//                    Double productUnit = cursor.getDouble(2);
-//                    if (tempList.get(product) == null) {
-//                        tempList.put(product, productUnit);
-//                    } else {
-//                        double sum = tempList.get(product) + productUnit;
-//                        tempList.put(product, sum);
-//                    }
-//                }
-//                cursor.close();
-//
-//                Cursor cursorSale = myDB.idProduct1(MyConstanta.TABLE_NAMESALE, MyConstanta.TITLESale, product);
-//
-//                while (cursorSale.moveToNext()) {
-//                    Double productUnit = cursorSale.getDouble(2);
-//                    double minus = tempList.get(product) - productUnit;
-//                    tempList.put(product, minus);
-//                }
-//                cursorSale.close();
-//
-//                Cursor cursorWriteOff = myDB.idProduct1(MyConstanta.TABLE_NAMEWRITEOFF, MyConstanta.TITLEWRITEOFF, product);
-//
-//                while (cursorWriteOff.moveToNext()) {
-//                    Double productUnit = cursorWriteOff.getDouble(2);
-//                    double minusWriteOff = tempList.get(product) - productUnit;
-//                    tempList.put(product, minusWriteOff);
-//                }
-//                cursorWriteOff.close();
-//            } else {
-//                tempList.put(product, 0.0);
-//            }
-//        }
-//
-//        return tempList;
-//    }
+
+
+    //Формируем список из БД
+    public void add() {
+
+        Cursor cursor = myDB.readProduct();
+
+        while (cursor.moveToNext()) {
+            String product = cursor.getString(1);
+            productAllList.add(product);
+        }
+        cursor.close();
+
+        for (String product : productAllList) {
+
+            String productName = null;
+            double productUnitAdd = 0;
+            double productUnitWriteOff = 0;
+            String suffix = null;
+
+            Cursor cursorAdd = myDB.selectProductJoin(1, product, MyConstanta.TABLE_NAME_ADD);
+
+            if (cursorAdd != null && cursorAdd.getCount() != 0) {
+                cursorAdd.moveToFirst();
+                productName = cursorAdd.getString(0);
+
+                productUnitAdd = cursorAdd.getDouble(1);
+
+                suffix = cursorAdd.getString(2);
+
+            }
+            cursor.close();
+
+            Cursor cursorWriteOff = myDB.selectProductJoin(1, product, MyConstanta.TABLE_NAME_WRITEOFF);
+
+            if (cursorWriteOff != null && cursorWriteOff.getCount() != 0) {
+                cursorWriteOff.moveToFirst();
+                productUnitWriteOff = cursorWriteOff.getDouble(1);
+
+            }
+
+            cursorWriteOff.close();
+
+            double nowUnitProduct = productUnitAdd - productUnitWriteOff;
+
+            productList.add(new Product(productName, nowUnitProduct, suffix));
+
+        }
+    }
 
 
 }
