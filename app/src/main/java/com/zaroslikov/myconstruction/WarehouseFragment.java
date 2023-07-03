@@ -63,6 +63,9 @@ public class WarehouseFragment extends Fragment {
             idProject = bundle.getInt("id");
         }
 
+        MainActivity mainActivity = new MainActivity();
+       idProject = mainActivity.getProjectNumer();
+
         //Настройка листа
         productAllList = new ArrayList();
         productList = new ArrayList();
@@ -100,7 +103,7 @@ public class WarehouseFragment extends Fragment {
             double productUnitWriteOff = 0;
             String suffix = null;
 
-            Cursor cursorAdd = myDB.selectProductJoin(1, product, MyConstanta.TABLE_NAME_ADD);
+            Cursor cursorAdd = myDB.selectProductJoin(idProject, product, MyConstanta.TABLE_NAME_ADD);
 
             if (cursorAdd != null && cursorAdd.getCount() != 0) {
                 cursorAdd.moveToFirst();
@@ -113,7 +116,7 @@ public class WarehouseFragment extends Fragment {
             }
             cursor.close();
 
-            Cursor cursorWriteOff = myDB.selectProductJoin(1, product, MyConstanta.TABLE_NAME_WRITEOFF);
+            Cursor cursorWriteOff = myDB.selectProductJoin(idProject, product, MyConstanta.TABLE_NAME_WRITEOFF);
 
             if (cursorWriteOff != null && cursorWriteOff.getCount() != 0) {
                 cursorWriteOff.moveToFirst();

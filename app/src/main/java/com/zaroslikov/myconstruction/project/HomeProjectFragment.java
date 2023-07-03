@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.zaroslikov.myconstruction.AddProjectFragment;
+import com.zaroslikov.myconstruction.MainActivity;
 import com.zaroslikov.myconstruction.R;
 import com.zaroslikov.myconstruction.WarehouseFragment;
 import com.zaroslikov.myconstruction.db.MyDatabaseHelper;
@@ -66,6 +67,8 @@ public class HomeProjectFragment extends Fragment {
             @Override
             public void onClick(int position, String name, String data, int id) {
                 inProject(position, name,data,id);
+                MainActivity mainActivity = new MainActivity();
+                mainActivity.setProjectNumer(id);
             }
         });
 

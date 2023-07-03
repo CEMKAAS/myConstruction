@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private MaterialToolbar appBar;
     private int position = 0;
 
+    public static int projectNumer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         set();
         binding.navView.setVisibility(View.GONE);
         binding.navView.setOnNavigationItemSelectedListener(item -> {
-            int ujh=0;
             position = item.getItemId();
 
             if(position == R.id.warehouse_button){
@@ -73,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
                 fab.setVisibility(View.GONE);
             } else if (position==R.id.add_button){
                 replaceFragment(new AddFragment());
+            } else if (position == R.id.writeOff_button){
+                replaceFragment(new WriteOffFragment());
             }
 
 //                case R.id.finance_button:
@@ -121,6 +124,10 @@ public class MainActivity extends AppCompatActivity {
                     binding.navView.setVisibility(View.VISIBLE);
                     position = 2;
                 }
+                if (fragment instanceof WriteOffFragment) {
+                    binding.navView.setVisibility(View.VISIBLE);
+                    position = 3;
+                }
                 binding.navView.getMenu().getItem(position).setChecked(true);
             }
         }
@@ -144,10 +151,15 @@ public class MainActivity extends AppCompatActivity {
         if (cursor.getCount() == 0) {
             replaceFragment(new AddProjectFragment());
         } else if (cursor.getCount() == 1) {
+            cursor.moveToFirst();
+            setProjectNumer(cursor.getInt(0));
+
+            int ds = getProjectNumer();
             replaceFragment(new WarehouseFragment());
         } else {
             replaceFragment(new MenuProjectFragment());
         }
+        cursor.close();
     }
 
     //Переходим на фрагмент
@@ -178,5 +190,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         builder.create().show();
+    }
+
+    public void setProjectNumer(int projectNumer){
+        this.projectNumer = projectNumer;
+    }
+    public int getProjectNumer(){
+        return projectNumer;
     }
 }
