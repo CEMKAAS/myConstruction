@@ -75,6 +75,9 @@ public class AddFragment extends Fragment {
         addProduct();
 
         // Настройка календаря
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        date.getEditText().setText(calendar.get(Calendar.DAY_OF_MONTH)+ "." +(calendar.get(Calendar.MONTH) + 1) + "." + calendar.get(Calendar.YEAR));
+
         CalendarConstraints constraintsBuilder = new CalendarConstraints.Builder()
                 .setValidator(DateValidatorPointBackward.now())
                 .build();

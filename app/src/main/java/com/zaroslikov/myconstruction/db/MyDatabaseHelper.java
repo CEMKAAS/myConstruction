@@ -127,6 +127,16 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         cv.put(MyConstanta.IDPP, idPP);
         db.insert(MyConstanta.TABLE_NAME_ADD, null, cv);
     }
+
+    public void insertToDbProductWriteOff(double count, String category, String date, int idPP) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(MyConstanta.QUANTITY,count);
+        cv.put(MyConstanta.CATEGORY, category);
+        cv.put(MyConstanta.DATE, date);
+        cv.put(MyConstanta.IDPP, idPP);
+        db.insert(MyConstanta.TABLE_NAME_WRITEOFF, null, cv);
+    }
 //    public Cursor readProductJoin(int propertyId){
 //        String query = "SELECT s."+ MyConstanta.TITLEPROJECT+
 //                ", p." + MyConstanta.TITLEPRODUCT + ", p."+ MyConstanta.TITLEPRODUCT +
@@ -240,5 +250,30 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
         return cursor;
     }
+
+    public Cursor seachProductToProject(){
+        String query = "SELECT " + MyConstanta.TITLEPRODUCT + ", " + MyConstanta.CATEGORY +
+                " FROM " + MyConstanta.TABLE_NAME_ADD + " ad " +
+                "JOIN " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT + " pp " +
+                "ON pp." + MyConstanta._ID  + " = " + "ad." + MyConstanta.IDPP +
+
+                " JOIN " + MyConstanta.TABLE_NAME_PRODUCT + " prod " +
+                "ON prod." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPRODUCT +
+
+                " JOIN " + MyConstanta.TABLE_NAME + " proj " +
+                "ON proj." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPROJECT +
+
+                " WHERE proj." + MyConstanta._ID + "=1 "+
+                "group by " + MyConstanta.TITLEPRODUCT + ", " + MyConstanta.CATEGORY;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor =  db.rawQuery(query, null);
+        }
+
+        return cursor;
+    }
+
 
 }

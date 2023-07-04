@@ -18,7 +18,7 @@ import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClic
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.zaroslikov.myconstruction.db.MyDatabaseHelper;
-import com.zaroslikov.myconstruction.project.MenuProjectFragment;
+import com.zaroslikov.myconstruction.db.project.MenuProjectFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

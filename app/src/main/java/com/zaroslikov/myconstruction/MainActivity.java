@@ -6,21 +6,16 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.zaroslikov.myconstruction.databinding.ActivityMainBinding;
 import com.zaroslikov.myconstruction.db.MyDatabaseHelper;
-import com.zaroslikov.myconstruction.project.MenuProjectFragment;
+import com.zaroslikov.myconstruction.db.project.MenuProjectFragment;
 
 public class MainActivity extends AppCompatActivity {
 

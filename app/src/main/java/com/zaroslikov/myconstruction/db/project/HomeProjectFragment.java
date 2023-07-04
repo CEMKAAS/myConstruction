@@ -1,4 +1,4 @@
-package com.zaroslikov.myconstruction.project;
+package com.zaroslikov.myconstruction.db.project;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.zaroslikov.myconstruction.AddProjectFragment;
 import com.zaroslikov.myconstruction.MainActivity;

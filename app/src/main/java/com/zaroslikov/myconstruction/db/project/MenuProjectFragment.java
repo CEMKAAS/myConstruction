@@ -1,4 +1,4 @@
-package com.zaroslikov.myconstruction.project;
+package com.zaroslikov.myconstruction.db.project;
 
 import android.os.Bundle;
 
