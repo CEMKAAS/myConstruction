@@ -35,7 +35,7 @@ import java.util.TimeZone;
 
 public class AddFragment extends Fragment {
     private MyDatabaseHelper myDB;
-    private TextInputLayout add_edit, date, price_edit;
+    private TextInputLayout add_edit, date, price_edit, productNameMenu,suffixMenu,categoryMenu;
     private AutoCompleteTextView productName, suffixSpiner, category;
     private ArrayAdapter<String> arrayAdapterProduct, arrayAdapterCategory;
     private List<String> productNameList, categoryList;
@@ -63,6 +63,12 @@ public class AddFragment extends Fragment {
         fab.setText("Журнал");
         fab.setIconResource(R.drawable.baseline_book_24);
         fab.getIcon();
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickButton(new MagazineManagerFragment());
+            }
+        });
 
         productName = layout.findViewById(R.id.productName_editText);
         add_edit = layout.findViewById(R.id.add_edit);
@@ -71,6 +77,11 @@ public class AddFragment extends Fragment {
         category = layout.findViewById(R.id.category_edit);
         date = layout.findViewById(R.id.date);
         nowUnit = layout.findViewById(R.id.now_warehouse);
+
+
+        productNameMenu = layout.findViewById(R.id.product_name_add_menu);
+        suffixMenu = layout.findViewById(R.id.suffix_add_menu);
+        categoryMenu = layout.findViewById(R.id.category_add_menu);
 
         addProduct();
 
@@ -109,6 +120,7 @@ public class AddFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String productClick = productNameList.get(position);
+
                 addDB(productClick);
             }
         });
@@ -139,21 +151,13 @@ public class AddFragment extends Fragment {
         Cursor cursor = myDB.readProduct();
 
         while (cursor.moveToNext()) {
-            productList.add(new Product(
-                    cursor.getInt(0),
-                    cursor.getString(1),
-                    cursor.getString(2)
-            ));
-        }
-
-        for (Product product: productList) {
-            productNameList.add(product.getName());
+            productNameList.add(cursor.getString(1));
         }
         cursor.close();
 
+
         Set<String> tempList = new HashSet<>();
-        //TODO сделать в хелпере
-        Cursor cursor1 = myDB.seachCategory();
+        Cursor cursor1 = myDB.seachCategory(idProject);
 
         while (cursor1.moveToNext()){
             tempList.add(cursor1.getString(0));
@@ -167,83 +171,123 @@ public class AddFragment extends Fragment {
     }
 
     public void addInDB() {
-        //Достаем из андройда имяПродукта и суффикс
-        String name = productName.getText().toString();
-        String suffix = suffixSpiner.getText().toString();
+        add_edit.setErrorEnabled(false);
+        date.setErrorEnabled(false);
+        categoryMenu.setErrorEnabled(false);
+        suffixMenu.setErrorEnabled(false);
+        price_edit.setErrorEnabled(false);
+        productNameMenu.setErrorEnabled(false);
 
-        int idProduct = 0;
-        int idPP = 0;
-        // проверяем продукт в БД
-        Cursor cursorProduct = myDB.seachProduct(name);
-        if (cursorProduct.getCount()==0) {
-            idProduct = Math.toIntExact(myDB.insertToDbProduct(name, suffix));
-            productNameList.add(name);
-        }else {
-            cursorProduct.moveToFirst();
-            idProduct = cursorProduct.getInt(0);
+        if (productName.getText().toString().equals("") || suffixSpiner.getText().toString().equals("")
+                || add_edit.getEditText().getText().toString().equals("") || category.getText().toString().equals("")
+                || date.getEditText().getText().toString().equals("") || price_edit.getEditText().getText().toString().equals("")) {
+
+            if (productName.getText().toString().equals("")) {
+                productNameMenu.setError("Выберите товар!");
+                productNameMenu.getError();
+            }
+
+            if (suffixSpiner.getText().toString().equals("")) {
+                suffixMenu.setError("Выберите единицу!");
+                suffixMenu.getError();
+            }
+
+            if (add_edit.getEditText().getText().toString().equals("")) {
+                add_edit.setError("Укажите кол-во товара!");
+                add_edit.getError();
+            }
+            if (category.getText().toString().equals("")) {
+                categoryMenu.setError("Укажите категорию!");
+                categoryMenu.getError();
+            }
+
+            if (date.getEditText().getText().toString().equals("")) {
+                date.setError("Укажите дату!");
+                date.getError();
+            }
+
+            if (price_edit.getEditText().getText().toString().equals("")){
+                price_edit.setError("Укажите цену!");
+                price_edit.getError();
+            }
+
+        } else {
+            //Достаем из андройда имяПродукта и суффикс
+            String name = productName.getText().toString();
+            String suffix = suffixSpiner.getText().toString();
+            double price = Double.parseDouble(price_edit.getEditText().getText().toString());
+            double count = Double.parseDouble(add_edit.getEditText().getText().toString());
+
+            String categoryProduct = category.getText().toString();
+            String dateProduct = date.getEditText().toString();
+
+            int idProduct = 0;
+            int idPP = 0;
+
+            // проверяем продукт в БД
+            Cursor cursorProduct = myDB.seachProduct(name);
+            if (cursorProduct.getCount() == 0) {
+                idProduct = Math.toIntExact(myDB.insertToDbProduct(name, suffix));
+                productNameList.add(name);
+            } else {
+                cursorProduct.moveToFirst();
+                idProduct = cursorProduct.getInt(0);
+            }
+            cursorProduct.close();
+
+            //проверяем связку продукт архив
+            Cursor cursorPP = myDB.seachPP(idProject, idProduct);
+
+            if (cursorPP.getCount() == 0) {
+                idPP = Math.toIntExact(myDB.insertToDbProjectProduct(idProject, idProduct));
+            } else {
+                cursorPP.moveToFirst();
+                idPP = cursorPP.getInt(0);
+            }
+            cursorPP.close();
+
+            myDB.insertToDbProductAdd(count, categoryProduct, price, dateProduct, idPP);
+
+            Toast.makeText(getActivity(), "Добавили " + name + " " + count + " " + suffix + " за " + price + " ₽", Toast.LENGTH_LONG).show();
+
+            if (!categoryList.contains(categoryProduct)) {
+                categoryList.add(categoryProduct);
+            }
+
+            addDB(name);
         }
-        cursorProduct.close();
-
-        //проверяем связку продукт архив
-        Cursor cursorPP = myDB.seachPP(idProject, idProduct);
-
-        if(cursorPP.getCount()==0){
-            idPP = Math.toIntExact(myDB.insertToDbProjectProduct(idProject, idProduct));
-        }else {
-            cursorPP.moveToFirst();
-            idPP = cursorPP.getInt(0);
-        }
-        cursorPP.close();
-
-        //присвыаеиваем ид продукта и проекта в адд таблицу
-        double price = Double.parseDouble(price_edit.getEditText().getText().toString());
-        double count = Double.parseDouble(add_edit.getEditText().getText().toString());
-
-        String categoryProduct = category.getText().toString();
-        String dateProduct = date.getEditText().toString();
-
-        myDB.insertToDbProductAdd(count,categoryProduct, price,dateProduct, idPP);
-
-        Toast.makeText(getActivity(),"Добавили " + name + " " + count + " " + suffix + " за " + price + " ₽", Toast.LENGTH_LONG).show();
-
-        if (!categoryList.contains(categoryProduct)) {
-            categoryList.add(categoryProduct);
-        }
-
-        addDB(name);
     }
     //Формируем список из БД
     public void addDB(String product) {
 
-        Cursor cursor = myDB.selectProductJoin(idProject, product, MyConstanta.TABLE_NAME_ADD);
-        String productName = null;
-        double productUnitAdd = 0;
-        double productUnitWriteOff = 0;
-        String suffix = null;
-        if (cursor != null && cursor.getCount() != 0) {
-            cursor.moveToFirst();
-            productName = cursor.getString(0);
+            Cursor cursor = myDB.selectProductJoin(idProject, product, MyConstanta.TABLE_NAME_ADD);
+            String productName = null;
+            double productUnitAdd = 0;
+            double productUnitWriteOff = 0;
+            String suffix = null;
+            if (cursor != null && cursor.getCount() != 0) {
+                cursor.moveToFirst();
+                productName = cursor.getString(0);
 
-            productUnitAdd = cursor.getDouble(1);
+                productUnitAdd = cursor.getDouble(1);
 
-            suffix = cursor.getString(2);
+                suffix = cursor.getString(2);
 
-        }
-        cursor.close();
+            }
+            cursor.close();
 
-        Cursor cursorWriteOff = myDB.selectProductJoin(idProject, product, MyConstanta.TABLE_NAME_WRITEOFF);
+            Cursor cursorWriteOff = myDB.selectProductJoin(idProject, product, MyConstanta.TABLE_NAME_WRITEOFF);
 
-        if (cursorWriteOff != null && cursorWriteOff.getCount() != 0) {
-            cursorWriteOff.moveToFirst();
-            productUnitWriteOff = cursorWriteOff.getDouble(1);
+            if (cursorWriteOff != null && cursorWriteOff.getCount() != 0) {
+                cursorWriteOff.moveToFirst();
+                productUnitWriteOff = cursorWriteOff.getDouble(1);
 
-        }
-        cursorWriteOff.close();
+            }
+            cursorWriteOff.close();
 
-        double nowUnitProduct = productUnitAdd - productUnitWriteOff;
+            double nowUnitProduct = productUnitAdd - productUnitWriteOff;
 
-        nowUnit.setText(productName + " " + nowUnitProduct + " " + suffix);
-
+            nowUnit.setText(" На складе " + productName + " " + nowUnitProduct + " " + suffix);
     }
 
     public void setArrayAdapter(){
@@ -256,5 +300,10 @@ public class AddFragment extends Fragment {
         category.setAdapter(arrayAdapterCategory);
     }
 
-
+    public void onClickButton(Fragment fragment) {
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.conteiner, fragment, "visible_fragment")
+                .addToBackStack(null)
+                .commit();
+    }
 }

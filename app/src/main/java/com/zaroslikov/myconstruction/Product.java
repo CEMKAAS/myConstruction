@@ -4,9 +4,36 @@ public class Product {
 
 
     private String name;
+    private String category;
     private double count;
-    private String suffix;
     private double price;
+    private String suffix;
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public Product(String name, String category, double count, double price, String date) {
+        this.name = name;
+        this.category = category;
+        this.count = count;
+        this.price = price;
+        this.date = date;
+    }
+
+    private String date;
 
     private int id;
 

@@ -15,7 +15,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.zaroslikov.myconstruction.databinding.ActivityMainBinding;
 import com.zaroslikov.myconstruction.db.MyDatabaseHelper;
-import com.zaroslikov.myconstruction.db.project.MenuProjectFragment;
+import com.zaroslikov.myconstruction.project.MenuProjectFragment;
 
 public class MainActivity extends AppCompatActivity {
 

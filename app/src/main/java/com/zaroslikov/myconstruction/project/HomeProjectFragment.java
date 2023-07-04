@@ -1,4 +1,4 @@
-package com.zaroslikov.myconstruction.db.project;
+package com.zaroslikov.myconstruction.project;
 
 import android.database.Cursor;
 import android.os.Bundle;
