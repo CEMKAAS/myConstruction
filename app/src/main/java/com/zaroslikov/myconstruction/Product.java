@@ -1,6 +1,11 @@
 package com.zaroslikov.myconstruction;
 
-public class Product {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+public class Product implements Parcelable {
 
 
     private String name;
@@ -88,6 +93,16 @@ public class Product {
         this.id = id;
         this.name = name;
         this.suffix = suffix;
+
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
 
     }
 }

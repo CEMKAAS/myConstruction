@@ -273,7 +273,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     }
     public Cursor readAddMagazine(int idProject){
         String query = "SELECT " + MyConstanta.TITLEPRODUCT + ", " + MyConstanta.CATEGORY +", " +
-                MyConstanta.QUANTITY + ", " + MyConstanta.PRICE + ", " + MyConstanta.DATE+
+                MyConstanta.QUANTITY + ", " + MyConstanta.PRICE + ", " + MyConstanta.DATE +
                 " FROM " + MyConstanta.TABLE_NAME_ADD + " ad " +
                 "JOIN " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT + " pp " +
                 "ON pp." + MyConstanta._ID  + " = " + "ad." + MyConstanta.IDPP +

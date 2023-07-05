@@ -17,6 +17,9 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.zaroslikov.myconstruction.db.MyDatabaseHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MagazineManagerFragment extends Fragment {
     private MyDatabaseHelper myDB;
     private String appBarManager;
@@ -25,6 +28,9 @@ public class MagazineManagerFragment extends Fragment {
     private CustomAdapterMagazine customAdapterMagazine;
     private RecyclerView recyclerView;
     private ImageView empty_imageview;
+
+    private Boolean magazineAddBool;
+    private List<Product> products;
     private TextView no_data, sixColumn, dicsPrice;
 
     @Override
@@ -36,6 +42,8 @@ public class MagazineManagerFragment extends Fragment {
         myDB = new MyDatabaseHelper(getActivity());
         MainActivity mainActivity = new MainActivity();
         idProject = mainActivity.getProjectNumer();
+
+        products = new ArrayList<>();
 
         //убириаем фаб кнопку
         ExtendedFloatingActionButton fab = (ExtendedFloatingActionButton) getActivity().findViewById(R.id.extended_fab);
@@ -66,10 +74,12 @@ public class MagazineManagerFragment extends Fragment {
         if (appBarManager.equals("Мои Покупки")) {
             cursorManager = myDB.readAddMagazine(idProject);
             visibility = View.VISIBLE;
+            magazineAddBool = true;
             myRow =  R.layout.my_row_add;
         } else if (appBarManager.equals("Мои Списания")) {
             cursorManager = myDB.readWriteOffMagazine(idProject);
             visibility = View.GONE;
+            magazineAddBool = false;
             myRow =  R.layout.my_row_write_off;
         }
 
@@ -86,7 +96,7 @@ public class MagazineManagerFragment extends Fragment {
         storeDataInArraysClass(cursorManager);
 
         //Создание адаптера
-        customAdapterMagazine = new CustomAdapterMagazine(productNow, myRow);
+        customAdapterMagazine = new CustomAdapterMagazine(products, myRow);
 
         recyclerView.setAdapter(customAdapterMagazine);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -94,8 +104,8 @@ public class MagazineManagerFragment extends Fragment {
         //Запускаем при нажатии
         customAdapterMagazine.setListener(new CustomAdapterMagazine.Listener() {
             @Override
-            public void onClick(int position, ProductDB productDB) {
-                addChart(productDB);
+            public void onClick(int position, Product product) {
+
             }
         });
 
@@ -106,26 +116,39 @@ public class MagazineManagerFragment extends Fragment {
         if (cursor.getCount() == 0) {
             empty_imageview.setVisibility(View.VISIBLE);
             no_data.setVisibility(View.VISIBLE);
-        } else if (statusPrice.equals("Нет")) {
-            storeDataInArraysClassLogic(cursor, 0);
+        } else if (magazineAddBool) {
+            storeDataInArraysClassLogic(cursor);
         } else {
-            storeDataInArraysClassLogic(cursor, 6);
+            storeDataInArraysClassLogic(cursor);
         }
-        productNow.addAll(product);
+
+//        productNow.addAll(product);
     }
 
-    public void storeDataInArraysClassLogic(Cursor cursor, int id){
+    public void storeDataInArraysClassLogic(Cursor cursor){
         cursor.moveToLast();
-        product.add(new ProductDB(cursor.getInt(0), cursor.getString(1), cursor.getDouble(2),
-                cursor.getString(3) + "." + cursor.getString(4) + "." + cursor.getString(5), cursor.getInt(id)));
+        products.add(new Product(cursor.getString(0), cursor.getString(1), cursor.getDouble(2),
+                cursor.getDouble(3), cursor.getString(4)));
         while (cursor.moveToPrevious()) {
-            product.add(new ProductDB(cursor.getInt(0), cursor.getString(1), cursor.getDouble(2),
-                    cursor.getString(3) + "." + cursor.getString(4) + "." + cursor.getString(5), cursor.getInt(id)));
+            products.add(new Product(cursor.getString(1), cursor.getString(2), cursor.getDouble(3),
+                    cursor.getDouble(4), cursor.getString(4)));
         }
         cursor.close();
         empty_imageview.setVisibility(View.GONE);
         no_data.setVisibility(View.GONE);
     }
+
+
+    public void addChart(Product product) {
+        UpdateProductFragment updateProductFragment = new UpdateProductFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("fd", product);
+        bundle.putString("id", appBarManager);
+        updateProductFragment.setArguments(bundle);
+
+        replaceFragment(updateProductFragment);
+    }
+
 
     private void replaceFragment(Fragment fragment) {
         getActivity().getSupportFragmentManager().beginTransaction()

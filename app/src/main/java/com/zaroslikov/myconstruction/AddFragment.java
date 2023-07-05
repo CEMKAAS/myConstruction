@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -69,6 +70,8 @@ public class AddFragment extends Fragment {
                 onClickButton(new MagazineManagerFragment());
             }
         });
+        MaterialToolbar appBar = getActivity().findViewById(R.id.topAppBar);
+        appBar.setTitle("Мои Покупки");
 
         productName = layout.findViewById(R.id.productName_editText);
         add_edit = layout.findViewById(R.id.add_edit);
@@ -219,7 +222,9 @@ public class AddFragment extends Fragment {
             double count = Double.parseDouble(add_edit.getEditText().getText().toString());
 
             String categoryProduct = category.getText().toString();
-            String dateProduct = date.getEditText().toString();
+            String dateProduct = date.getEditText().getText().toString();
+
+            String sa = dateProduct;
 
             int idProduct = 0;
             int idPP = 0;
