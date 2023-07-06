@@ -15,7 +15,18 @@ public class UpdateProductFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_update_product, container, false);
+        View layout = inflater.inflate(R.layout.fragment_update_product, container, false);
+
+
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            nameProject = bundle.getString("name");
+            dateProject = bundle.getString("date");
+            idProject = bundle.getInt("id");
+        }
+
+
+
+        return layout;
     }
 }
