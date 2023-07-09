@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -62,6 +63,16 @@ public class WriteOffFragment extends Fragment {
         fab.setText("Журнал");
         fab.setIconResource(R.drawable.baseline_book_24);
         fab.getIcon();
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickButton(new MagazineManagerFragment());
+            }
+        });
+
+
+        MaterialToolbar appBar = getActivity().findViewById(R.id.topAppBar);
+        appBar.setTitle("Мои Списания");
 
         productName = layout.findViewById(R.id.productName_editText);
         add_edit = layout.findViewById(R.id.add_edit);
@@ -112,7 +123,7 @@ public class WriteOffFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String productClick = productNameList.get(position);
-                addDB(productClick, 0);
+                addDB(productClick, 0, suffixSpiner.getText().toString());
 
                 Cursor cursorProduct = myDB.seachProduct(productClick);
                 while (cursorProduct.moveToNext()) {
@@ -210,9 +221,9 @@ public class WriteOffFragment extends Fragment {
             String categoryProduct = category.getText().toString();
             String dateProduct = date.getEditText().getText().toString();
 
-            if (addDB(name, count)) {
+            if (addDB(name, count, suffix)) {
                 // проверяем продукт в БД
-                Cursor cursorProduct = myDB.seachProduct(name);
+                Cursor cursorProduct = myDB.seachProductAndSuffix(name, suffix);
                 cursorProduct.moveToFirst();
                 int idProduct = cursorProduct.getInt(0);
                 cursorProduct.close();
@@ -237,9 +248,9 @@ public class WriteOffFragment extends Fragment {
     }
 
     //Формируем список из БД
-    public boolean addDB(String product, double count) {
+    public boolean addDB(String product, double count, String suffixName) {
 
-        Cursor cursor = myDB.selectProductJoin(idProject, product, MyConstanta.TABLE_NAME_ADD);
+        Cursor cursor = myDB.selectProductJoin(idProject, product, MyConstanta.TABLE_NAME_ADD, suffixName);
         String productName = null;
         double productUnitAdd = 0;
         double productUnitWriteOff = 0;
@@ -256,7 +267,7 @@ public class WriteOffFragment extends Fragment {
         }
         cursor.close();
 
-        Cursor cursorWriteOff = myDB.selectProductJoin(idProject, product, MyConstanta.TABLE_NAME_WRITEOFF);
+        Cursor cursorWriteOff = myDB.selectProductJoin(idProject, product, MyConstanta.TABLE_NAME_WRITEOFF, suffixName);
 
         if (cursorWriteOff != null && cursorWriteOff.getCount() != 0) {
             cursorWriteOff.moveToFirst();
@@ -294,5 +305,11 @@ public class WriteOffFragment extends Fragment {
         suffixSpiner.setAdapter(arrayAdapterSuffix);
     }
 
+    public void onClickButton(Fragment fragment) {
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.conteiner, fragment, "visible_fragment")
+                .addToBackStack(null)
+                .commit();
+    }
 
 }

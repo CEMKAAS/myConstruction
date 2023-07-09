@@ -48,15 +48,15 @@ public class MagazineManagerFragment extends Fragment {
         //убириаем фаб кнопку
         ExtendedFloatingActionButton fab = (ExtendedFloatingActionButton) getActivity().findViewById(R.id.extended_fab);
         fab.setVisibility(View.GONE);
-//Настройка АппБара
+        //Настройка АппБара
         MaterialToolbar appBar = getActivity().findViewById(R.id.topAppBar);
         appBar.getMenu().findItem(R.id.filler).setVisible(true);
         appBar.setNavigationIcon(R.drawable.baseline_arrow_back_24);
         appBar.setOnMenuItemClickListener(item -> {
             int position = item.getItemId();
-            if(position == R.id.filler){
-//                bottomSheetDialog.show();
-            } else if (position==R.id.moreAll){
+            if (position == R.id.filler) {
+                //bottomSheetDialog.show();
+            } else if (position == R.id.moreAll) {
                 replaceFragment(new InFragment());
                 appBar.setTitle("Информация");
             }
@@ -65,7 +65,8 @@ public class MagazineManagerFragment extends Fragment {
         appBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().popBackStack();;
+                getActivity().getSupportFragmentManager().popBackStack();
+                ;
             }
         });
 
@@ -75,12 +76,12 @@ public class MagazineManagerFragment extends Fragment {
             cursorManager = myDB.readAddMagazine(idProject);
             visibility = View.VISIBLE;
             magazineAddBool = true;
-            myRow =  R.layout.my_row_add;
+            myRow = R.layout.my_row_add;
         } else if (appBarManager.equals("Мои Списания")) {
             cursorManager = myDB.readWriteOffMagazine(idProject);
             visibility = View.GONE;
             magazineAddBool = false;
-            myRow =  R.layout.my_row_write_off;
+            myRow = R.layout.my_row_write_off;
         }
 
         //Создание отображения списка
@@ -105,7 +106,7 @@ public class MagazineManagerFragment extends Fragment {
         customAdapterMagazine.setListener(new CustomAdapterMagazine.Listener() {
             @Override
             public void onClick(int position, Product product) {
-
+                addChart(product);
             }
         });
 
@@ -117,21 +118,22 @@ public class MagazineManagerFragment extends Fragment {
             empty_imageview.setVisibility(View.VISIBLE);
             no_data.setVisibility(View.VISIBLE);
         } else if (magazineAddBool) {
-            storeDataInArraysClassLogic(cursor);
+            storeDataInArraysClassLogicAdd(cursor);
         } else {
-            storeDataInArraysClassLogic(cursor);
+            storeDataInArraysClassLogicWriteOff(cursor);
         }
 
 //        productNow.addAll(product);
     }
 
-    public void storeDataInArraysClassLogic(Cursor cursor){
+    //TODO Как бы сократить это говно?)
+    public void storeDataInArraysClassLogicAdd(Cursor cursor) {
         cursor.moveToLast();
-        products.add(new Product(cursor.getString(0), cursor.getString(1), cursor.getDouble(2),
-                cursor.getDouble(3), cursor.getString(4)));
+        products.add(new Product(cursor.getInt(0), cursor.getString(1), cursor.getString(2),
+                cursor.getDouble(3), cursor.getDouble(4), cursor.getString(5), cursor.getString(6)));
         while (cursor.moveToPrevious()) {
-            products.add(new Product(cursor.getString(1), cursor.getString(2), cursor.getDouble(3),
-                    cursor.getDouble(4), cursor.getString(4)));
+            products.add(new Product(cursor.getInt(0), cursor.getString(1), cursor.getString(2),
+                    cursor.getDouble(3), cursor.getDouble(4), cursor.getString(5), cursor.getString(6)));
         }
         cursor.close();
         empty_imageview.setVisibility(View.GONE);
@@ -139,10 +141,25 @@ public class MagazineManagerFragment extends Fragment {
     }
 
 
+    public void storeDataInArraysClassLogicWriteOff(Cursor cursor) {
+        cursor.moveToLast();
+        products.add(new Product(cursor.getInt(0), cursor.getString(1), cursor.getString(2),
+                cursor.getDouble(3), 0, cursor.getString(4), cursor.getString(4)));
+        while (cursor.moveToPrevious()) {
+            products.add(new Product(cursor.getInt(0), cursor.getString(1), cursor.getString(2),
+                    cursor.getDouble(3), 0, cursor.getString(4), cursor.getString(5)));
+        }
+        cursor.close();
+        empty_imageview.setVisibility(View.GONE);
+        no_data.setVisibility(View.GONE);
+    }
+
+
+
     public void addChart(Product product) {
         UpdateProductFragment updateProductFragment = new UpdateProductFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable("fd", product);
+        bundle.putParcelable("product", product);
         bundle.putString("id", appBarManager);
         updateProductFragment.setArguments(bundle);
 

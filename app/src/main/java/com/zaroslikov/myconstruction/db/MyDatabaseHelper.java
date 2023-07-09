@@ -7,6 +7,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
@@ -154,7 +155,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 //        return cursor;
 //    }
 
-    public Cursor selectProductJoin(int propertyId, String productName, String tableName){
+    public Cursor selectProductJoin(int propertyId, String productName, String tableName, String suffix){
         String query = "SELECT " + MyConstanta.TITLEPRODUCT+
                 ", sum(" + MyConstanta.QUANTITY + "), " + MyConstanta.SUFFIX +
                 " FROM " + tableName + " ad " +
@@ -167,7 +168,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                 " JOIN " + MyConstanta.TABLE_NAME + " proj " +
                 "ON proj." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPROJECT +
 
-                " WHERE proj." + MyConstanta._ID + "=? and " + MyConstanta.TITLEPRODUCT + "=?" +
+                " WHERE proj." + MyConstanta._ID + "=? and " + MyConstanta.TITLEPRODUCT + "=? and " + MyConstanta.SUFFIX + "=? " +
                 "group by " + MyConstanta.TITLEPRODUCT + ", " + MyConstanta.SUFFIX;
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -175,7 +176,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = null;
         if (db != null) {
 
-            cursor =  db.rawQuery(query, new String[]{String.valueOf(propertyId),productName});
+            cursor =  db.rawQuery(query, new String[]{String.valueOf(propertyId),productName, suffix});
         }
 
         return cursor;
@@ -196,16 +197,29 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 //        return cursor;
 //    }
 
+public Cursor seachProduct(String productName){
+    String query = "SELECT * FROM " + MyConstanta.TABLE_NAME_PRODUCT +
+            " Where " + MyConstanta.TITLEPRODUCT + "=?";
 
-    public Cursor seachProduct(String productName){
+    SQLiteDatabase db = this.getReadableDatabase();
+
+    Cursor cursor = null;
+    if (db != null) {
+        cursor =  db.rawQuery(query, new String[]{productName});
+    }
+
+    return cursor;
+}
+
+    public Cursor seachProductAndSuffix(String productName, String suffix){
         String query = "SELECT * FROM " + MyConstanta.TABLE_NAME_PRODUCT +
-                " Where " + MyConstanta.TITLEPRODUCT + "=?";
+                " Where " + MyConstanta.TITLEPRODUCT + "=? and " + MyConstanta.SUFFIX + "=?";
 
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = null;
         if (db != null) {
-            cursor =  db.rawQuery(query, new String[]{productName});
+            cursor =  db.rawQuery(query, new String[]{productName, suffix});
         }
 
         return cursor;
@@ -272,8 +286,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
     public Cursor readAddMagazine(int idProject){
-        String query = "SELECT " + MyConstanta.TITLEPRODUCT + ", " + MyConstanta.CATEGORY +", " +
-                MyConstanta.QUANTITY + ", " + MyConstanta.PRICE + ", " + MyConstanta.DATE +
+        String query = "SELECT ad."+ MyConstanta._ID + ", " + MyConstanta.TITLEPRODUCT + ", " + MyConstanta.CATEGORY +", " +
+                MyConstanta.QUANTITY + ", " + MyConstanta.PRICE + ", " + MyConstanta.DATE + ", " + MyConstanta.SUFFIX +
                 " FROM " + MyConstanta.TABLE_NAME_ADD + " ad " +
                 "JOIN " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT + " pp " +
                 "ON pp." + MyConstanta._ID  + " = " + "ad." + MyConstanta.IDPP +
@@ -297,8 +311,8 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public Cursor readWriteOffMagazine(int idProject){
-        String query = "SELECT " + MyConstanta.TITLEPRODUCT + ", " + MyConstanta.CATEGORY +", " +
-                MyConstanta.QUANTITY + ", " + MyConstanta.DATE +
+        String query = "SELECT ad."+ MyConstanta._ID + ", "+ MyConstanta.TITLEPRODUCT + ", " + MyConstanta.CATEGORY +", " +
+                MyConstanta.QUANTITY + ", " + MyConstanta.DATE + ", " + MyConstanta.SUFFIX +
                 " FROM " + MyConstanta.TABLE_NAME_WRITEOFF + " ad " +
                 "JOIN " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT + " pp " +
                 "ON pp." + MyConstanta._ID  + " = " + "ad." + MyConstanta.IDPP +
@@ -319,6 +333,113 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         }
 
         return cursor;
+    }
+
+    public long updateToDbProjectProduct( int idPP, int idProject, int idProduct) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(MyConstanta.IDPROJECT, idProject);
+        cv.put(MyConstanta.IDPRODUCT, idProduct);
+        long id = db.update(MyConstanta.TABLE_NAME_PROJECT_PRODUCT,cv,"id=?", new String[]{String.valueOf(idPP)});
+
+        if (id == -1) {
+            Toast.makeText(context, "Ошибка!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Успешно обновлено!", Toast.LENGTH_SHORT).show();
+        }
+        return id;
+    }
+
+    public Cursor seachAdd(double count, String category, double price, String date, int idPP){
+        String query = "SELECT * FROM " + MyConstanta.TABLE_NAME_ADD +
+                " Where " + MyConstanta.QUANTITY + "=? and " + MyConstanta.CATEGORY + "=? and " +
+                MyConstanta.PRICE + "=? and " + MyConstanta.DATE + "=? and " +
+                MyConstanta.IDPP + "=?";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor =  db.rawQuery(query, new String[]{String.valueOf(count), category, String.valueOf(price),date,String.valueOf(idPP)});
+        }
+
+        return cursor;
+    }
+
+    public Cursor seachWriteOff(double count, String category, String date, int idPP){
+        String query = "SELECT * FROM " + MyConstanta.TABLE_NAME_ADD +
+                " Where " + MyConstanta.QUANTITY + "=? and " + MyConstanta.CATEGORY + "=? and "
+                + MyConstanta.DATE + "=? and " + MyConstanta.IDPP + "=?";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor =  db.rawQuery(query, new String[]{String.valueOf(count), category,date,String.valueOf(idPP)});
+        }
+
+        return cursor;
+    }
+
+
+    public void updateToDbAdd(double count, String category, double price, String date, int idPP, int idAdd) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(MyConstanta.QUANTITY,count);
+        cv.put(MyConstanta.CATEGORY, category);
+        cv.put(MyConstanta.PRICE, price);
+        cv.put(MyConstanta.DATE, date);
+        cv.put(MyConstanta.IDPP, idPP);
+        long id = db.update(MyConstanta.TABLE_NAME_ADD,cv,"id=?", new String[]{String.valueOf(idAdd)});
+
+        if (id == -1) {
+            Toast.makeText(context, "Ошибка!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Успешно обновлено!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    public void updateToDbWriteOff(double count, String category, String date, int idPP, int idWO) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(MyConstanta.QUANTITY,count);
+        cv.put(MyConstanta.CATEGORY, category);
+        cv.put(MyConstanta.DATE, date);
+        cv.put(MyConstanta.IDPP, idPP);
+        long id = db.update(MyConstanta.TABLE_NAME_WRITEOFF,cv,"id=?", new String[]{String.valueOf(idWO)});
+
+        if (id == -1) {
+            Toast.makeText(context, "Ошибка!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Успешно обновлено!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public long updateToDbProduct(String oldName, String name, String suffix) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(MyConstanta.TITLEPRODUCT,name);
+        cv.put(MyConstanta.SUFFIX, suffix);
+        long id = db.update(MyConstanta.TABLE_NAME_PRODUCT,cv,"NameProduct=?", new String[]{oldName});
+
+        if (id == -1) {
+            Toast.makeText(context, "Ошибка!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Успешно обновлено!", Toast.LENGTH_SHORT).show();
+        }
+        return id;
+    }
+
+
+    public void deleteOneRowAdd(int row_id, String nameTable) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        long result = db.delete(nameTable, "id=?", new String[]{String.valueOf(row_id)});
+        if (result == -1) {
+            Toast.makeText(context, "Ошибка.", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Успешно удаленно.", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

@@ -14,6 +14,28 @@ public class Product implements Parcelable {
     private double price;
     private String suffix;
 
+    protected Product(Parcel in) {
+        name = in.readString();
+        category = in.readString();
+        count = in.readDouble();
+        price = in.readDouble();
+        suffix = in.readString();
+        date = in.readString();
+        id = in.readInt();
+    }
+
+    public static final Creator<Product> CREATOR = new Creator<Product>() {
+        @Override
+        public Product createFromParcel(Parcel in) {
+            return new Product(in);
+        }
+
+        @Override
+        public Product[] newArray(int size) {
+            return new Product[size];
+        }
+    };
+
     public String getCategory() {
         return category;
     }
@@ -30,12 +52,14 @@ public class Product implements Parcelable {
         this.date = date;
     }
 
-    public Product(String name, String category, double count, double price, String date) {
+    public Product(int id, String name, String category, double count, double price, String date, String suffix) {
+        this.id = id;
         this.name = name;
         this.category = category;
         this.count = count;
         this.price = price;
         this.date = date;
+        this.suffix = suffix;
     }
 
     private String date;
@@ -103,6 +127,12 @@ public class Product implements Parcelable {
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
-
+        dest.writeString(name);
+        dest.writeString(category);
+        dest.writeDouble(count);
+        dest.writeDouble(price);
+        dest.writeString(suffix);
+        dest.writeString(date);
+        dest.writeInt(id);
     }
 }

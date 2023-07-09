@@ -27,8 +27,7 @@ public class WarehouseFragment extends Fragment {
     public String dateProject;
     public int idProject;
     private RecyclerView recyclerView;
-    private List<String> productAllList;
-    private List<Product> productList;
+    private List<Product> productList, productAllList;;
 
     private MyDatabaseHelper myDB;
 
@@ -91,19 +90,18 @@ public class WarehouseFragment extends Fragment {
         Cursor cursor = myDB.readProduct();
 
         while (cursor.moveToNext()) {
-            String product = cursor.getString(1);
-            productAllList.add(product);
+            productAllList.add(new Product(cursor.getInt(0),cursor.getString(1),cursor.getString(2)));
         }
         cursor.close();
 
-        for (String product : productAllList) {
+        for (Product product : productAllList) {
 
             String productName = null;
             double productUnitAdd = 0;
             double productUnitWriteOff = 0;
             String suffix = null;
 
-            Cursor cursorAdd = myDB.selectProductJoin(idProject, product, MyConstanta.TABLE_NAME_ADD);
+            Cursor cursorAdd = myDB.selectProductJoin(idProject, product.getName(), MyConstanta.TABLE_NAME_ADD, product.getSuffix());
 
             if (cursorAdd != null && cursorAdd.getCount() != 0) {
                 cursorAdd.moveToFirst();
@@ -116,7 +114,7 @@ public class WarehouseFragment extends Fragment {
             }
             cursor.close();
 
-            Cursor cursorWriteOff = myDB.selectProductJoin(idProject, product, MyConstanta.TABLE_NAME_WRITEOFF);
+            Cursor cursorWriteOff = myDB.selectProductJoin(idProject, product.getName(), MyConstanta.TABLE_NAME_WRITEOFF, product.getSuffix());
 
             if (cursorWriteOff != null && cursorWriteOff.getCount() != 0) {
                 cursorWriteOff.moveToFirst();

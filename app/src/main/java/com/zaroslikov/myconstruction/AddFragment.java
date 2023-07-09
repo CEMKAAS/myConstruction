@@ -124,7 +124,7 @@ public class AddFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String productClick = productNameList.get(position);
 
-                addDB(productClick);
+                addDB(productClick, suffixSpiner.getText().toString());
             }
         });
 
@@ -230,7 +230,7 @@ public class AddFragment extends Fragment {
             int idPP = 0;
 
             // проверяем продукт в БД
-            Cursor cursorProduct = myDB.seachProduct(name);
+            Cursor cursorProduct = myDB.seachProductAndSuffix(name, suffix);
             if (cursorProduct.getCount() == 0) {
                 idProduct = Math.toIntExact(myDB.insertToDbProduct(name, suffix));
                 productNameList.add(name);
@@ -259,29 +259,29 @@ public class AddFragment extends Fragment {
                 categoryList.add(categoryProduct);
             }
 
-            addDB(name);
+            addDB(name,suffix);
         }
     }
     //Формируем список из БД
-    public void addDB(String product) {
+    public void addDB(String product, String suffix) {
 
-            Cursor cursor = myDB.selectProductJoin(idProject, product, MyConstanta.TABLE_NAME_ADD);
+            Cursor cursor = myDB.selectProductJoin(idProject, product, MyConstanta.TABLE_NAME_ADD, suffix);
             String productName = null;
             double productUnitAdd = 0;
             double productUnitWriteOff = 0;
-            String suffix = null;
+            String suffixName = null;
             if (cursor != null && cursor.getCount() != 0) {
                 cursor.moveToFirst();
                 productName = cursor.getString(0);
 
                 productUnitAdd = cursor.getDouble(1);
 
-                suffix = cursor.getString(2);
+                suffixName = cursor.getString(2);
 
             }
             cursor.close();
 
-            Cursor cursorWriteOff = myDB.selectProductJoin(idProject, product, MyConstanta.TABLE_NAME_WRITEOFF);
+            Cursor cursorWriteOff = myDB.selectProductJoin(idProject, product, MyConstanta.TABLE_NAME_WRITEOFF, suffix);
 
             if (cursorWriteOff != null && cursorWriteOff.getCount() != 0) {
                 cursorWriteOff.moveToFirst();
@@ -292,7 +292,7 @@ public class AddFragment extends Fragment {
 
             double nowUnitProduct = productUnitAdd - productUnitWriteOff;
 
-            nowUnit.setText(" На складе " + productName + " " + nowUnitProduct + " " + suffix);
+            nowUnit.setText(" На складе " + productName + " " + nowUnitProduct + " " + suffixName);
     }
 
     public void setArrayAdapter(){
