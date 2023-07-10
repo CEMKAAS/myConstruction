@@ -144,7 +144,7 @@ public class MagazineManagerFragment extends Fragment {
     public void storeDataInArraysClassLogicWriteOff(Cursor cursor) {
         cursor.moveToLast();
         products.add(new Product(cursor.getInt(0), cursor.getString(1), cursor.getString(2),
-                cursor.getDouble(3), 0, cursor.getString(4), cursor.getString(4)));
+                cursor.getDouble(3), 0, cursor.getString(4), cursor.getString(5)));
         while (cursor.moveToPrevious()) {
             products.add(new Product(cursor.getInt(0), cursor.getString(1), cursor.getString(2),
                     cursor.getDouble(3), 0, cursor.getString(4), cursor.getString(5)));

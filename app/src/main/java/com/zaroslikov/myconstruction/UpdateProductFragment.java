@@ -120,8 +120,8 @@ public class UpdateProductFragment extends Fragment {
         date.getEditText().setText(productUpDate.getDate());
 
         if (nameMagazine.equals("Мои Покупки")) {
-           price_edit.setVisibility(View.VISIBLE);
-           nowUnit.setVisibility(View.GONE);
+            price_edit.setVisibility(View.VISIBLE);
+            nowUnit.setVisibility(View.GONE);
         } else if (nameMagazine.equals("Мои Списания")) {
             nowUnit.setText(productUpDate.getName() + " c ед. изм. " + productUpDate.getSuffix());
             suffixMenu.setVisibility(View.GONE);
@@ -151,7 +151,12 @@ public class UpdateProductFragment extends Fragment {
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                upDateProduct();
+
+                if (nameMagazine.equals("Мои Покупки")) {
+                    upDateProduct();
+                } else if (nameMagazine.equals("Мои Списания")) {
+                    upDateProductWriteOff();
+                }
             }
         });
 
@@ -279,7 +284,7 @@ public class UpdateProductFragment extends Fragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
 
                         idProduct[0] = Math.toIntExact(myDB.updateToDbProduct(productUpDate.getName(), name, suffix));
-                        if(addDB(productUpDate.getName(), count, productUpDate.getSuffix())) {
+                        if (addDB(productUpDate.getName(), count, productUpDate.getSuffix())) {
                             cursorUpdate(idProduct, idPP, count, categoryProduct, price, dateProduct);
                         }
                         //TODO Обновим список
@@ -298,9 +303,9 @@ public class UpdateProductFragment extends Fragment {
             } else {
                 cursorProduct.moveToFirst();
                 idProduct[0] = cursorProduct.getInt(0);
-
-                if(addDB(name, count, suffix)) {
-                cursorUpdate(idProduct, idPP, count, categoryProduct, price, dateProduct);
+                cursorProduct.close();
+                if (addDB(name, count, suffix)) {
+                    cursorUpdate(idProduct, idPP, count, categoryProduct, price, dateProduct);
                 }
             }
         }
@@ -323,7 +328,7 @@ public class UpdateProductFragment extends Fragment {
         if (nameMagazine.equals("Мои Покупки")) {
             myDB.updateToDbAdd(count, categoryProduct, price, dateProduct, idPP, productUpDate.getId());
         } else if (nameMagazine.equals("Мои Списания")) {
-           myDB.updateToDbWriteOff(count, categoryProduct, dateProduct, idPP, productUpDate.getId());
+            myDB.updateToDbWriteOff(count, categoryProduct, dateProduct, idPP, productUpDate.getId());
         }
 
         Toast.makeText(getActivity(), "Обновленно", Toast.LENGTH_LONG).show();
@@ -354,7 +359,7 @@ public class UpdateProductFragment extends Fragment {
         }
         cursor.close();
 
-        Cursor cursorWriteOff = myDB.selectProductJoin(idProject, name, MyConstanta.TABLE_NAME_WRITEOFF,suffix);
+        Cursor cursorWriteOff = myDB.selectProductJoin(idProject, name, MyConstanta.TABLE_NAME_WRITEOFF, suffix);
 
         if (cursorWriteOff != null && cursorWriteOff.getCount() != 0) {
             cursorWriteOff.moveToFirst();
@@ -364,17 +369,22 @@ public class UpdateProductFragment extends Fragment {
         cursorWriteOff.close();
 
         double diff = productUpDate.getCount() - count;
+        double nowUnitProduct = 0;
+        if (nameMagazine.equals("Мои Покупки")) {
+            nowUnitProduct = (productUnitAdd - diff) - productUnitWriteOff;
+        } else if (nameMagazine.equals("Мои Списания")) {
+            nowUnitProduct = productUnitAdd  - (productUnitWriteOff- diff);
 
-        double nowUnitProduct = (productUnitAdd - diff) - productUnitWriteOff;
+        }
         double wareHouseUnitProduct = productUnitAdd - productUnitWriteOff;
 
         if (nowUnitProduct < 0) {
 
-            add_edit.setError("Столько товара нет на складе!\nВы можете списать только " + wareHouseUnitProduct  );
+            add_edit.setError("Столько товара нет на складе!\nВы можете списать только " + wareHouseUnitProduct);
             add_edit.getError();
             return false;
         }
-            return true;
+        return true;
     }
 
     public void upDateProductWriteOff() {
@@ -383,7 +393,7 @@ public class UpdateProductFragment extends Fragment {
         categoryMenu.setErrorEnabled(false);
 
         if (add_edit.getEditText().getText().toString().equals("") || category.getText().toString().equals("")
-                || date.getEditText().getText().toString().equals("") ) {
+                || date.getEditText().getText().toString().equals("")) {
 
             if (add_edit.getEditText().getText().toString().equals("")) {
                 add_edit.setError("Укажите кол-во товара!");
@@ -412,14 +422,14 @@ public class UpdateProductFragment extends Fragment {
             Cursor cursorProduct = myDB.seachProductAndSuffix(productUpDate.getName(), productUpDate.getSuffix());
             cursorProduct.moveToFirst();
             idProduct[0] = cursorProduct.getInt(0);
-
-                if(addDB(productUpDate.getName(), count, productUpDate.getSuffix())) {
-                    cursorUpdate(idProduct, idPP, count, categoryProduct, 0, dateProduct);
-                }
+            cursorProduct.close();
+            if (addDB(productUpDate.getName(), count, productUpDate.getSuffix())) {
+                cursorUpdate(idProduct, idPP, count, categoryProduct, 0, dateProduct);
             }
         }
+    }
 
-    public void deleteProduct(){
+    public void deleteProduct() {
         if (nameMagazine.equals("Мои Покупки")) {
             myDB.deleteOneRowAdd(productUpDate.getId(), MyConstanta.TABLE_NAME_ADD);
         } else if (nameMagazine.equals("Мои Списания")) {
@@ -435,7 +445,6 @@ public class UpdateProductFragment extends Fragment {
                 .addToBackStack(null)
                 .commit();
     }
-
 
 
     public void setArrayAdapter() {
