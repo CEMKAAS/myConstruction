@@ -55,20 +55,22 @@ public class UpdateProductFragment extends Fragment {
                              Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.fragment_update_product, container, false);
 
+        // Подключаемся к базе
         myDB = new MyDatabaseHelper(getActivity());
         productList = new ArrayList<>();
         categoryList = new ArrayList<>();
         productNameList = new ArrayList<>();
 
+        //Узнаем  ID проекта
         MainActivity mainActivity = new MainActivity();
         idProject = mainActivity.getProjectNumer();
-
+        //Получаем данные из другого фрагмента
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             productUpDate = bundle.getParcelable("product");
             nameMagazine = bundle.getString("id");
         }
-
+        //Подключаем фронт
         productName = layout.findViewById(R.id.productName_editText);
         add_edit = layout.findViewById(R.id.add_edit);
         price_edit = layout.findViewById(R.id.price_edit);
@@ -76,11 +78,11 @@ public class UpdateProductFragment extends Fragment {
         category = layout.findViewById(R.id.category_edit);
         date = layout.findViewById(R.id.date);
         nowUnit = layout.findViewById(R.id.now_warehouse);
-
+        //Подключаем Фронт для спинеров
         productNameMenu = layout.findViewById(R.id.product_name_add_menu);
         suffixMenu = layout.findViewById(R.id.suffix_add_menu);
         categoryMenu = layout.findViewById(R.id.category_add_menu);
-
+        //Настройка верхней строки
         MaterialToolbar appBar = getActivity().findViewById(R.id.topAppBar);
         //TODO Back и кнопка удаления на суффиксе
 
@@ -112,28 +114,32 @@ public class UpdateProductFragment extends Fragment {
             }
         });
 
+        //Назначае каждой строке
         productName.setText(productUpDate.getName());
         add_edit.getEditText().setText(String.valueOf(productUpDate.getCount()));
         suffixMenu.getEditText().setText(productUpDate.getSuffix());
         price_edit.getEditText().setText(String.valueOf(productUpDate.getPrice()));
         category.setText(productUpDate.getCategory());
         date.getEditText().setText(productUpDate.getDate());
-
+        //Все зависит от раздела
         if (nameMagazine.equals("Мои Покупки")) {
             price_edit.setVisibility(View.VISIBLE);
             nowUnit.setVisibility(View.GONE);
         } else if (nameMagazine.equals("Мои Списания")) {
+            //суффикс, цену и ввод имени убираем
             nowUnit.setText(productUpDate.getName() + " c ед. изм. " + productUpDate.getSuffix());
             suffixMenu.setVisibility(View.GONE);
             productNameMenu.setVisibility(View.GONE);
             price_edit.setVisibility(View.GONE);
         }
 
+        //Берем из бд товары и добавляем в список
         addProduct();
 
         productName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Назначаем суффикс из продукта
                 String productClick = productNameList.get(position);
 
                 Cursor cursorProduct = myDB.seachProduct(productClick);
@@ -142,33 +148,34 @@ public class UpdateProductFragment extends Fragment {
                     suffixMenu.getEditText().setText(cursorProduct.getString(2));
                 }
                 cursorProduct.close();
+
                 setArrayAdapter();
+
             }
         });
 
-
+        //Кнопка обновления
         Button updateButton = layout.findViewById(R.id.update_button);
         updateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (nameMagazine.equals("Мои Покупки")) {
-                    upDateProduct();
+                    upDateProductADD();
                 } else if (nameMagazine.equals("Мои Списания")) {
                     upDateProductWriteOff();
                 }
             }
         });
 
+        //Кнопка удаления
         Button deleteButton = layout.findViewById(R.id.delete_button);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 deleteProduct();
             }
         });
-
 
         return layout;
     }
@@ -182,7 +189,7 @@ public class UpdateProductFragment extends Fragment {
         }
     }
 
-    //Добавляем продукцию в список
+    //Добавляем продукцию в список из БД
     public void addProduct() {
         Cursor cursor = myDB.readProduct();
 
@@ -191,7 +198,7 @@ public class UpdateProductFragment extends Fragment {
         }
         cursor.close();
 
-
+        //Через сет, чтобы не было повторов
         Set<String> tempList = new HashSet<>();
         Cursor cursor1 = myDB.seachCategory(idProject);
 
@@ -206,7 +213,9 @@ public class UpdateProductFragment extends Fragment {
 
     }
 
-    public void upDateProduct() {
+    //Обновляем базу данных
+    public void upDateProductADD() {
+        //Очищаем ошибки
         add_edit.setErrorEnabled(false);
         date.setErrorEnabled(false);
         categoryMenu.setErrorEnabled(false);
@@ -214,6 +223,7 @@ public class UpdateProductFragment extends Fragment {
         price_edit.setErrorEnabled(false);
         productNameMenu.setErrorEnabled(false);
 
+        //проверяем есть ли ошибки
         if (productName.getText().toString().equals("") || suffixSpiner.getText().toString().equals("")
                 || add_edit.getEditText().getText().toString().equals("") || category.getText().toString().equals("")
                 || date.getEditText().getText().toString().equals("") || price_edit.getEditText().getText().toString().equals("")) {
@@ -248,20 +258,21 @@ public class UpdateProductFragment extends Fragment {
             }
 
         } else {
-            //Достаем из андройда имяПродукта и суффикс
+            //Достаем из Фронта все данные
             String name = productName.getText().toString();
             String suffix = suffixSpiner.getText().toString();
             double price = Double.parseDouble(price_edit.getEditText().getText().toString());
             double count = Double.parseDouble(add_edit.getEditText().getText().toString());
-
             String categoryProduct = category.getText().toString();
             String dateProduct = date.getEditText().getText().toString();
-            final int[] idProduct = {0};
+            //Константы
+            int[] idProduct = {0};
             int idPP = 0;
 
-            // проверяем продукт в БД
+            //Проверяем продукт в БД
             Cursor cursorProduct = myDB.seachProductAndSuffix(name, suffix);
 
+            //Если нет товара, то тогда
             if (cursorProduct.getCount() == 0) {
                 cursorProduct.close();
 
@@ -270,6 +281,7 @@ public class UpdateProductFragment extends Fragment {
                 builder.setMessage("Вы хотите ИЗМЕНИТЬ ВСЕ записи с " + productUpDate.getName() + " c ед.изм " + productUpDate.getSuffix()
                         + " на " + name + " c ед.изм " + suffix +
                         "\nИли  ДОБАВИТЬ новый товар " + name + " c ед.изм " + suffix + " с данными значениями?");
+
                 builder.setPositiveButton("Добавить", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -279,6 +291,7 @@ public class UpdateProductFragment extends Fragment {
                         cursorUpdate(idProduct, idPP, count, categoryProduct, price, dateProduct);
                     }
                 });
+
                 builder.setNegativeButton("Изменить", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -287,106 +300,32 @@ public class UpdateProductFragment extends Fragment {
                         if (addDB(productUpDate.getName(), count, productUpDate.getSuffix())) {
                             cursorUpdate(idProduct, idPP, count, categoryProduct, price, dateProduct);
                         }
-                        //TODO Обновим список
-
                     }
                 });
 
                 builder.setNeutralButton("Отмена", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                    }
+                    public void onClick(DialogInterface dialogInterface, int i) {}
                 });
+
                 builder.show();
 
             } else {
+
                 cursorProduct.moveToFirst();
                 idProduct[0] = cursorProduct.getInt(0);
                 cursorProduct.close();
+
                 if (addDB(name, count, suffix)) {
                     cursorUpdate(idProduct, idPP, count, categoryProduct, price, dateProduct);
+
                 }
+
             }
         }
     }
 
-    public void cursorUpdate(int idProduct[], int idPP, double count, String categoryProduct,
-                             double price, String dateProduct) {
-
-        //проверяем связку продукт архив
-        Cursor cursorPP = myDB.seachPP(idProject, idProduct[0]);
-
-        if (cursorPP.getCount() == 0) {
-            idPP = Math.toIntExact(myDB.insertToDbProjectProduct(idProject, idProduct[0]));
-        } else {
-            cursorPP.moveToFirst();
-            idPP = cursorPP.getInt(0);
-        }
-        cursorPP.close();
-
-        if (nameMagazine.equals("Мои Покупки")) {
-            myDB.updateToDbAdd(count, categoryProduct, price, dateProduct, idPP, productUpDate.getId());
-        } else if (nameMagazine.equals("Мои Списания")) {
-            myDB.updateToDbWriteOff(count, categoryProduct, dateProduct, idPP, productUpDate.getId());
-        }
-
-        Toast.makeText(getActivity(), "Обновленно", Toast.LENGTH_LONG).show();
-
-        if (!categoryList.contains(categoryProduct)) {
-            categoryList.add(categoryProduct);
-        }
-    }
-
-
-    //Формируем список из БД
-    public boolean addDB(String name, double count, String suffix) {
-
-        Cursor cursor = myDB.selectProductJoin(idProject, name, MyConstanta.TABLE_NAME_ADD, suffix);
-        String productName = null;
-        double productUnitAdd = 0;
-        double productUnitWriteOff = 0;
-        String suffixName = null;
-
-        if (cursor != null && cursor.getCount() != 0) {
-            cursor.moveToFirst();
-            productName = cursor.getString(0);
-
-            productUnitAdd = cursor.getDouble(1);
-
-            suffixName = cursor.getString(2);
-
-        }
-        cursor.close();
-
-        Cursor cursorWriteOff = myDB.selectProductJoin(idProject, name, MyConstanta.TABLE_NAME_WRITEOFF, suffix);
-
-        if (cursorWriteOff != null && cursorWriteOff.getCount() != 0) {
-            cursorWriteOff.moveToFirst();
-            productUnitWriteOff = cursorWriteOff.getDouble(1);
-
-        }
-        cursorWriteOff.close();
-
-        double diff = productUpDate.getCount() - count;
-        double nowUnitProduct = 0;
-        if (nameMagazine.equals("Мои Покупки")) {
-            nowUnitProduct = (productUnitAdd - diff) - productUnitWriteOff;
-        } else if (nameMagazine.equals("Мои Списания")) {
-            nowUnitProduct = productUnitAdd  - (productUnitWriteOff- diff);
-
-        }
-        double wareHouseUnitProduct = productUnitAdd - productUnitWriteOff;
-
-        if (nowUnitProduct < 0) {
-
-            add_edit.setError("Столько товара нет на складе!\nВы можете списать только " + wareHouseUnitProduct);
-            add_edit.getError();
-            return false;
-        }
-        return true;
-    }
-
+    //Обновляем Списание
     public void upDateProductWriteOff() {
         add_edit.setErrorEnabled(false);
         date.setErrorEnabled(false);
@@ -429,6 +368,84 @@ public class UpdateProductFragment extends Fragment {
         }
     }
 
+    //Проверяем уходим ли в минус или нет
+    public boolean addDB(String name, double count, String suffix) {
+
+        Cursor cursor = myDB.selectProductJoin(idProject, name, MyConstanta.TABLE_NAME_ADD, suffix);
+        String productName = null;
+        double productUnitAdd = 0;
+        double productUnitWriteOff = 0;
+        String suffixName = null;
+
+        if (cursor != null && cursor.getCount() != 0) {
+            cursor.moveToFirst();
+            productName = cursor.getString(0);
+
+            productUnitAdd = cursor.getDouble(1);
+
+            suffixName = cursor.getString(2);
+
+        }
+        cursor.close();
+
+        Cursor cursorWriteOff = myDB.selectProductJoin(idProject, name, MyConstanta.TABLE_NAME_WRITEOFF, suffix);
+
+        if (cursorWriteOff != null && cursorWriteOff.getCount() != 0) {
+            cursorWriteOff.moveToFirst();
+            productUnitWriteOff = cursorWriteOff.getDouble(1);
+
+        }
+        cursorWriteOff.close();
+
+        double diff = productUpDate.getCount() - count;
+        double nowUnitProduct = 0;
+
+        if (nameMagazine.equals("Мои Покупки")) {
+            nowUnitProduct = (productUnitAdd - diff) - productUnitWriteOff;
+        } else if (nameMagazine.equals("Мои Списания")) {
+            nowUnitProduct = productUnitAdd  - (productUnitWriteOff- diff);
+
+        }
+
+        double wareHouseUnitProduct = productUnitAdd - productUnitWriteOff;
+
+        if (nowUnitProduct < 0) {
+
+            add_edit.setError("Столько товара нет на складе!\nВы можете списать только " + wareHouseUnitProduct);
+            add_edit.getError();
+
+            return false;
+        }
+        return true;
+    }
+
+    public void cursorUpdate(int idProduct[], int idPP, double count, String categoryProduct,
+                             double price, String dateProduct) {
+
+        //проверяем связку продукт архив
+        Cursor cursorPP = myDB.seachPP(idProject, idProduct[0]);
+
+        if (cursorPP.getCount() == 0) {
+            idPP = Math.toIntExact(myDB.insertToDbProjectProduct(idProject, idProduct[0]));
+        } else {
+            cursorPP.moveToFirst();
+            idPP = cursorPP.getInt(0);
+        }
+        cursorPP.close();
+
+        if (nameMagazine.equals("Мои Покупки")) {
+            myDB.updateToDbAdd(count, categoryProduct, price, dateProduct, idPP, productUpDate.getId());
+        } else if (nameMagazine.equals("Мои Списания")) {
+            myDB.updateToDbWriteOff(count, categoryProduct, dateProduct, idPP, productUpDate.getId());
+        }
+
+        Toast.makeText(getActivity(), "Обновленно", Toast.LENGTH_LONG).show();
+        replaceFragment(new MagazineManagerFragment());
+        if (!categoryList.contains(categoryProduct)) {
+            categoryList.add(categoryProduct);
+        }
+    }
+
     public void deleteProduct() {
         if (nameMagazine.equals("Мои Покупки")) {
             myDB.deleteOneRowAdd(productUpDate.getId(), MyConstanta.TABLE_NAME_ADD);
@@ -445,7 +462,6 @@ public class UpdateProductFragment extends Fragment {
                 .addToBackStack(null)
                 .commit();
     }
-
 
     public void setArrayAdapter() {
         //Товар

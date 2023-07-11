@@ -182,6 +182,94 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+
+    public Cursor selectProjectAllSum (int propertyId){
+        String query = "SELECT " +
+                "sum(" + MyConstanta.PRICE + ")" +
+                " FROM " + MyConstanta.TABLE_NAME_ADD + " ad " +
+                "JOIN " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT + " pp " +
+                "ON pp." + MyConstanta._ID  + " = " + "ad." + MyConstanta.IDPP +
+
+                " JOIN " + MyConstanta.TABLE_NAME_PRODUCT + " prod " +
+                "ON prod." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPRODUCT +
+
+                " JOIN " + MyConstanta.TABLE_NAME + " proj " +
+                "ON proj." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPROJECT +
+
+                " WHERE proj." + MyConstanta._ID + "=?";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+
+            cursor =  db.rawQuery(query, new String[]{String.valueOf(propertyId)});
+        }
+
+        return cursor;
+    }
+
+
+    public Cursor selectProjectAllSumCategory(int propertyId, String category){
+        String query = "SELECT " + MyConstanta.CATEGORY+
+                ", sum(" + MyConstanta.PRICE + ") " +
+                " FROM " + MyConstanta.TABLE_NAME_ADD + " ad " +
+                "JOIN " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT + " pp " +
+                "ON pp." + MyConstanta._ID  + " = " + "ad." + MyConstanta.IDPP +
+
+                " JOIN " + MyConstanta.TABLE_NAME_PRODUCT + " prod " +
+                "ON prod." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPRODUCT +
+
+                " JOIN " + MyConstanta.TABLE_NAME + " proj " +
+                "ON proj." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPROJECT +
+
+                " WHERE proj." + MyConstanta._ID + "=? and " + MyConstanta.CATEGORY + "=?";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+
+            cursor =  db.rawQuery(query, new String[]{String.valueOf(propertyId),category});
+        }
+
+        return cursor;
+    }
+
+
+    public Cursor selectProjectAllSumProduct(int propertyId, String category){
+        String query = "SELECT " + MyConstanta.TITLEPRODUCT+ ", "+
+                MyConstanta.SUFFIX +
+                ", sum(" + MyConstanta.PRICE + ") " +
+                " FROM " + MyConstanta.TABLE_NAME_ADD + " ad " +
+                "JOIN " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT + " pp " +
+                "ON pp." + MyConstanta._ID  + " = " + "ad." + MyConstanta.IDPP +
+
+                " JOIN " + MyConstanta.TABLE_NAME_PRODUCT + " prod " +
+                "ON prod." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPRODUCT +
+
+                " JOIN " + MyConstanta.TABLE_NAME + " proj " +
+                "ON proj." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPROJECT +
+
+                " WHERE proj." + MyConstanta._ID + "=?";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+
+            cursor =  db.rawQuery(query, new String[]{String.valueOf(propertyId),category});
+        }
+
+        return cursor;
+    }
+
+
+
+
+
+
+
 //    public Cursor seachProduct(String productName){
 //        String query = "SELECT s." + MyConstanta.TITLEPRODUCT +
 //                " FROM " + MyConstanta.TABLE_NAME_PRODUCT + " s "+
@@ -392,11 +480,6 @@ public Cursor seachProduct(String productName){
         cv.put(MyConstanta.IDPP, idPP);
         long id = db.update(MyConstanta.TABLE_NAME_ADD,cv,"id=?", new String[]{String.valueOf(idAdd)});
 
-        if (id == -1) {
-            Toast.makeText(context, "Ошибка!", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(context, "Успешно обновлено!", Toast.LENGTH_SHORT).show();
-        }
     }
 
 
@@ -409,11 +492,6 @@ public Cursor seachProduct(String productName){
         cv.put(MyConstanta.IDPP, idPP);
         long id = db.update(MyConstanta.TABLE_NAME_WRITEOFF,cv,"id=?", new String[]{String.valueOf(idWO)});
 
-        if (id == -1) {
-            Toast.makeText(context, "Ошибка!", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(context, "Успешно обновлено!", Toast.LENGTH_SHORT).show();
-        }
     }
 
     public long updateToDbProduct(String oldName, String name, String suffix) {
@@ -422,12 +500,6 @@ public Cursor seachProduct(String productName){
         cv.put(MyConstanta.TITLEPRODUCT,name);
         cv.put(MyConstanta.SUFFIX, suffix);
         long id = db.update(MyConstanta.TABLE_NAME_PRODUCT,cv,"NameProduct=?", new String[]{oldName});
-
-        if (id == -1) {
-            Toast.makeText(context, "Ошибка!", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(context, "Успешно обновлено!", Toast.LENGTH_SHORT).show();
-        }
         return id;
     }
 
