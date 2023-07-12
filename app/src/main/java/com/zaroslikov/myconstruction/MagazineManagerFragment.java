@@ -10,11 +10,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.textfield.TextInputLayout;
 import com.zaroslikov.myconstruction.db.MyDatabaseHelper;
 
 import java.util.ArrayList;
@@ -32,6 +36,11 @@ public class MagazineManagerFragment extends Fragment {
     private Boolean magazineAddBool;
     private List<Product> products;
     private TextView no_data, sixColumn, dicsPrice;
+    private AutoCompleteTextView animalsSpinerSheet;
+
+    private Button buttonSheet;
+    private TextInputLayout dataSheet;
+    private BottomSheetDialog bottomSheetDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,18 +64,19 @@ public class MagazineManagerFragment extends Fragment {
         appBar.setOnMenuItemClickListener(item -> {
             int position = item.getItemId();
             if (position == R.id.filler) {
-                //bottomSheetDialog.show();
+                bottomSheetDialog.show();
             } else if (position == R.id.moreAll) {
                 replaceFragment(new InFragment());
                 appBar.setTitle("Информация");
             }
             return true;
         });
+
+
         appBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getActivity().getSupportFragmentManager().popBackStack();
-                ;
             }
         });
 
@@ -92,6 +102,8 @@ public class MagazineManagerFragment extends Fragment {
 
         sixColumn.setVisibility(visibility);
 
+//Создание модального bottomSheet
+        showBottomSheetDialog();
 
         //Добавдение товаров в лист
         storeDataInArraysClass(cursorManager);
@@ -154,7 +166,17 @@ public class MagazineManagerFragment extends Fragment {
         no_data.setVisibility(View.GONE);
     }
 
+    //Добавляем bottobSheet
+    public void showBottomSheetDialog() {
 
+        bottomSheetDialog = new BottomSheetDialog(getActivity());
+        bottomSheetDialog.setContentView(R.layout.fragment_bottom);
+
+        animalsSpinerSheet = bottomSheetDialog.findViewById(R.id.products_text);
+
+        dataSheet = bottomSheetDialog.findViewById(R.id.data_sheet);
+        buttonSheet = bottomSheetDialog.findViewById(R.id.button_sheet);
+    }
 
     public void addChart(Product product) {
         UpdateProductFragment updateProductFragment = new UpdateProductFragment();

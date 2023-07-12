@@ -19,10 +19,15 @@ import java.util.Map;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHolder> {
     private List<Product> productsList;
-
+    private Boolean fragment = false;
 
     public ProductAdapter(List productsList) {
        this.productsList = productsList;
+    }
+
+    public ProductAdapter(List productsList, Boolean fragment) {
+        this.productsList = productsList;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -37,24 +42,19 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
     @Override
     public void onBindViewHolder(@NonNull final ProductAdapter.MyViewHolder holder, @SuppressLint("RecyclerView") final int position) {
 
-        if(!productsList.get(position).equals("₽")) {
-            String nameProuct = productsList.get(position).getName();
-            double count = productsList.get(position).getCount();
-            String suffix = productsList.get(position).getSuffix();
+        String nameProuct = productsList.get(position).getName();
+        double count;
+        String suffix = productsList.get(position).getSuffix();
 
-            holder.products.setText(nameProuct);
-            holder.count.setText(String.valueOf(count));
-            holder.unit.setText(suffix);
-
+        if(fragment) {
+            count = productsList.get(position).getPrice();
         }else {
-            String nameProuct = productsList.get(position).getName();
-            double count = productsList.get(position).getPrice();
-            String suffix = productsList.get(position).getSuffix();
-
-            holder.products.setText(nameProuct);
-            holder.count.setText(String.valueOf(count));
-            holder.unit.setText(suffix);
+            count = productsList.get(position).getCount();
         }
+
+        holder.products.setText(nameProuct+ " ");
+        holder.count.setText(String.valueOf(count));
+        holder.unit.setText(suffix);
 
 
     }

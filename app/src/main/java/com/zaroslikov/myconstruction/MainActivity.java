@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
                 replaceFragment(new AddFragment());
             } else if (position == R.id.writeOff_button){
                 replaceFragment(new WriteOffFragment());
+            } else if (position == R.id.finance_button) {
+                replaceFragment(new FinanceFragment());
             }
 
 //                case R.id.finance_button:
@@ -115,6 +117,10 @@ public class MainActivity extends AppCompatActivity {
                 if (fragment instanceof MenuProjectFragment) {
                     binding.navView.setVisibility(View.GONE);
                 }
+                if (fragment instanceof FinanceFragment) {
+                    binding.navView.setVisibility(View.VISIBLE);
+                    position = 1;
+                }
                 if (fragment instanceof AddFragment) {
                     binding.navView.setVisibility(View.VISIBLE);
                     position = 2;
@@ -149,7 +155,6 @@ public class MainActivity extends AppCompatActivity {
             cursor.moveToFirst();
             setProjectNumer(cursor.getInt(0));
 
-            int ds = getProjectNumer();
             replaceFragment(new WarehouseFragment());
         } else {
             replaceFragment(new MenuProjectFragment());

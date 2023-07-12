@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     >
 
     <!-- TODO: Update blank fragment layout -->
@@ -11,7 +12,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_gravity="center">
+        android:layout_gravity="top|center">
+
+        <TextView
+            android:id="@+id/all_sum"
+            style="@style/TextAppearance.MyApp.DisplaySmall3"
+            android:layout_marginBottom="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="" />
 
         <TextView
             style="@style/TextAppearance.MyApp.DisplaySmall3"
@@ -19,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Общий итог  " />
+            android:text="По категориям: " />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -27,6 +37,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <TextView
+            style="@style/TextAppearance.MyApp.DisplaySmall3"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="По продукции: " />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewAll"

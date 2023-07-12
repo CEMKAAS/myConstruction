@@ -237,7 +237,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public Cursor selectProjectAllSumProduct(int propertyId, String category){
+    public Cursor selectProjectAllSumProduct(int propertyId, String product){
         String query = "SELECT " + MyConstanta.TITLEPRODUCT+ ", "+
                 MyConstanta.SUFFIX +
                 ", sum(" + MyConstanta.PRICE + ") " +
@@ -251,14 +251,14 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
                 " JOIN " + MyConstanta.TABLE_NAME + " proj " +
                 "ON proj." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPROJECT +
 
-                " WHERE proj." + MyConstanta._ID + "=?";
+                " WHERE proj." + MyConstanta._ID + "=? and " + MyConstanta.TITLEPRODUCT + "=?";
 
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = null;
         if (db != null) {
 
-            cursor =  db.rawQuery(query, new String[]{String.valueOf(propertyId),category});
+            cursor =  db.rawQuery(query, new String[]{String.valueOf(propertyId),product});
         }
 
         return cursor;

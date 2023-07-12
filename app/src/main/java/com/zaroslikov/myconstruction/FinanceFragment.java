@@ -10,9 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.textfield.TextInputLayout;
 import com.zaroslikov.myconstruction.db.MyConstanta;
 import com.zaroslikov.myconstruction.db.MyDatabaseHelper;
 
@@ -26,8 +28,7 @@ public class FinanceFragment extends Fragment {
     private int idProject;
     private MyDatabaseHelper myDB;
     private List<Product> productSumList, categorySumList;
-    ;
-
+private TextView allSumText;
     private List<String> productNameList, categoryList;
 
     @Override
@@ -56,6 +57,8 @@ public class FinanceFragment extends Fragment {
         MainActivity mainActivity = new MainActivity();
         idProject = mainActivity.getProjectNumer();
 
+        allSumText = layout.findViewById(R.id.all_sum);
+
         //Настройка листа
         categorySumList = new ArrayList();
         productSumList = new ArrayList();
@@ -69,11 +72,11 @@ public class FinanceFragment extends Fragment {
         recyclerViewCategory = layout.findViewById(R.id.recyclerView);
         recyclerViewProduct = layout.findViewById(R.id.recyclerViewAll);
 
-        ProductAdapter productAdapterCategory = new ProductAdapter(categorySumList);
+        ProductAdapter productAdapterCategory = new ProductAdapter(categorySumList,true);
         recyclerViewCategory.setAdapter(productAdapterCategory);
         recyclerViewCategory.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        ProductAdapter productAdapterProduct = new ProductAdapter(productSumList);
+        ProductAdapter productAdapterProduct = new ProductAdapter(productSumList, true);
         recyclerViewProduct.setAdapter(productAdapterProduct);
         recyclerViewProduct.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -91,23 +94,25 @@ public class FinanceFragment extends Fragment {
         Set<String> categoryHashSet = new HashSet<>();
 
         while (cursorProductAdd.moveToNext()) {
-            productHashSet.add(cursorProductAdd.getString(1));
-            categoryHashSet.add(cursorProductAdd.getString(3));
-
-            for (String name : productHashSet) {
-                productNameList.add(name);
-            }
-
-            for (String category : categoryHashSet) {
-                categoryList.add(category);
-            }
+            productHashSet.add(cursorProductAdd.getString(0));
+            categoryHashSet.add(cursorProductAdd.getString(2));
         }
+        cursorProductAdd.close();
+
+        for (String name : productHashSet) {
+            productNameList.add(name);
+        }
+
+        for (String category : categoryHashSet) {
+            categoryList.add(category);
+        }
+
         cursorProductAdd.close();
 
         Cursor cursorAllSum = myDB.selectProjectAllSum(idProject);
         cursorAllSum.moveToFirst();
-        double allSum = cursorAllSum.getDouble(1);
-        //TODO Назначем сумму
+        double allSum = cursorAllSum.getDouble(0);
+        allSumText.setText("Общая сумма: " + allSum + " ₽");
         cursorAllSum.close();
 
         for (String category : categoryList) {
@@ -124,7 +129,7 @@ public class FinanceFragment extends Fragment {
             Cursor cursorProduct = myDB.selectProjectAllSumProduct(idProject,product);
 
             while (cursorProduct.moveToNext()){
-                productSumList.add(new Product(cursorProduct.getString(0), "₽", cursorProduct.getDouble(1)));
+                productSumList.add(new Product(cursorProduct.getString(0), "₽", cursorProduct.getDouble(2)));
             }
             cursorProduct.close();
         }
