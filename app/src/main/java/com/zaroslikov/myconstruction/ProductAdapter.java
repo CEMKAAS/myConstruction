@@ -37,13 +37,25 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
     @Override
     public void onBindViewHolder(@NonNull final ProductAdapter.MyViewHolder holder, @SuppressLint("RecyclerView") final int position) {
 
-        String nameProuct = productsList.get(position).getName();
-        double count = productsList.get(position).getCount();
-        String suffix = productsList.get(position).getSuffix();
+        if(!productsList.get(position).equals("₽")) {
+            String nameProuct = productsList.get(position).getName();
+            double count = productsList.get(position).getCount();
+            String suffix = productsList.get(position).getSuffix();
 
-        holder.products.setText(nameProuct);
-        holder.count.setText(String.valueOf(count));
-        holder.unit.setText(suffix);
+            holder.products.setText(nameProuct);
+            holder.count.setText(String.valueOf(count));
+            holder.unit.setText(suffix);
+
+        }else {
+            String nameProuct = productsList.get(position).getName();
+            double count = productsList.get(position).getPrice();
+            String suffix = productsList.get(position).getSuffix();
+
+            holder.products.setText(nameProuct);
+            holder.count.setText(String.valueOf(count));
+            holder.unit.setText(suffix);
+        }
+
 
     }
 

@@ -211,7 +211,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
 
     public Cursor selectProjectAllSumCategory(int propertyId, String category){
-        String query = "SELECT " + MyConstanta.CATEGORY+
+        String query = "SELECT " + MyConstanta.CATEGORY +
                 ", sum(" + MyConstanta.PRICE + ") " +
                 " FROM " + MyConstanta.TABLE_NAME_ADD + " ad " +
                 "JOIN " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT + " pp " +
@@ -264,26 +264,31 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public Cursor selectProjectAllProductAndCategoryAdd(int propertyId){
+        String query = "SELECT " + MyConstanta.TITLEPRODUCT+ ", "+
+                MyConstanta.SUFFIX + ", " + MyConstanta.CATEGORY +
+                " FROM " + MyConstanta.TABLE_NAME_ADD + " ad " +
+                "JOIN " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT + " pp " +
+                "ON pp." + MyConstanta._ID  + " = " + "ad." + MyConstanta.IDPP +
 
+                " JOIN " + MyConstanta.TABLE_NAME_PRODUCT + " prod " +
+                "ON prod." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPRODUCT +
 
+                " JOIN " + MyConstanta.TABLE_NAME + " proj " +
+                "ON proj." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPROJECT +
 
+                " WHERE proj." + MyConstanta._ID + "=?";
 
+        SQLiteDatabase db = this.getReadableDatabase();
 
+        Cursor cursor = null;
+        if (db != null) {
+            cursor =  db.rawQuery(query, new String[]{String.valueOf(propertyId)});
+        }
 
-//    public Cursor seachProduct(String productName){
-//        String query = "SELECT s." + MyConstanta.TITLEPRODUCT +
-//                " FROM " + MyConstanta.TABLE_NAME_PRODUCT + " s "+
-//                "Where s." + MyConstanta.TABLE_NAME_PRODUCT + "=?";
-//
-//        SQLiteDatabase db = this.getReadableDatabase();
-//
-//        Cursor cursor = null;
-//        if (db != null) {
-//            cursor =  db.rawQuery(query, new String[]{productName});
-//        }
-//
-//        return cursor;
-//    }
+        return cursor;
+    }
+
 
 public Cursor seachProduct(String productName){
     String query = "SELECT * FROM " + MyConstanta.TABLE_NAME_PRODUCT +

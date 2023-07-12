@@ -113,6 +113,14 @@ public class Product implements Parcelable {
         this.price = price;
     }
 
+    public Product(String name, String suffix,  double price) {
+       this.name = name;
+       this.price = price;
+       this.suffix = suffix;
+    }
+
+
+
     public Product(int id, String name, String suffix) {
         this.id = id;
         this.name = name;
