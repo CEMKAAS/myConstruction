@@ -25,6 +25,7 @@
 
         <TextView
             style="@style/TextAppearance.MyApp.DisplaySmall3"
+            android:id="@+id/category_txt"
             android:layout_marginBottom="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -39,6 +40,7 @@
 
         <TextView
             style="@style/TextAppearance.MyApp.DisplaySmall3"
+            android:id="@+id/product_txt"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             android:layout_width="wrap_content"

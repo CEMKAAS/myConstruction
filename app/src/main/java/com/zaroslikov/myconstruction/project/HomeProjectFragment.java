@@ -80,7 +80,7 @@ public class HomeProjectFragment extends Fragment {
 
         if (cursor.getCount() != 0) {
             while (cursor.moveToNext()) {
-                if (cursor.getInt(4) == 0) {
+                if (cursor.getInt(5) == 0) {
                     id.add(cursor.getInt(0));
                     name.add(cursor.getString(1));
                     data.add(cursor.getString(2));

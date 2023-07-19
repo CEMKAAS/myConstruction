@@ -113,10 +113,11 @@ public class Product implements Parcelable {
         this.price = price;
     }
 
-    public Product(String name, String suffix,  double price) {
+    public Product(String name, String suffix,  double price, String date) {
        this.name = name;
        this.price = price;
        this.suffix = suffix;
+       this.date = date;
     }
 
 

@@ -10,11 +10,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.zaroslikov.myconstruction.db.MyConstanta;
 import com.zaroslikov.myconstruction.db.MyDatabaseHelper;
+import com.zaroslikov.myconstruction.project.MenuProjectFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,9 +53,10 @@ public class WarehouseFragment extends Fragment {
         appBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().popBackStack();
+                replaceFragment(new MenuProjectFragment());
             }
         });
+
 
         Bundle bundle = this.getArguments();
         if (bundle != null) {
@@ -77,6 +80,14 @@ public class WarehouseFragment extends Fragment {
         recyclerView.setAdapter(productAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        Button add = layout.findViewById(R.id.end_button);
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myDB.updateToDbProject(idProject, 1);
+                replaceFragment(new MenuProjectFragment());
+            }
+        });
         return layout;
     }
 
@@ -87,10 +98,10 @@ public class WarehouseFragment extends Fragment {
     //Формируем список из БД
     public void add() {
 
-        Cursor cursor = myDB.readProduct();
+        Cursor cursor = myDB.selectProjectAllProductAndCategoryAdd(idProject);
 
         while (cursor.moveToNext()) {
-            productAllList.add(new Product(cursor.getInt(0),cursor.getString(1),cursor.getString(2)));
+            productAllList.add(new Product(0,cursor.getString(0),cursor.getString(1)));
         }
         cursor.close();
 
@@ -130,6 +141,11 @@ public class WarehouseFragment extends Fragment {
 
         }
     }
-
+    private void replaceFragment(Fragment fragment) {
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.conteiner, fragment, "visible_fragment")
+                .addToBackStack(null)
+                .commit();
+    }
 
 }

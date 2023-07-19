@@ -267,6 +267,9 @@ public class MagazineManagerFragment extends Fragment {
         animalsSpinerSheet = bottomSheetDialog.findViewById(R.id.product_spiner_sheet);
         categorySpinerSheet = bottomSheetDialog.findViewById(R.id.categiry_spiner_sheet);
 
+        animalsSpinerSheet.setText("Все",false);
+        categorySpinerSheet.setText("Все", false);
+
         dataSheet = bottomSheetDialog.findViewById(R.id.data_sheet);
         buttonSheet = bottomSheetDialog.findViewById(R.id.button_sheet);
     }
@@ -324,7 +327,70 @@ public class MagazineManagerFragment extends Fragment {
         if (animalsSpinerSheetText.equals("Все") && categorySpinerSheetText.equals("Все") && dataSheet.getEditText().getText().toString().equals("")) {
             productNow.addAll(products);
 
-        } else if (!dataSheet.getEditText().getText().toString().equals("")) {
+        } else if (animalsSpinerSheetText.equals("Все") && categorySpinerSheetText.equals("Все") && !dataSheet.getEditText().getText().toString().equals("")) {
+
+                for (Product product : products) {
+
+                    Date dateNow = format.parse(product.getDate());
+
+                    if ((dateFirst.before(dateNow) && dateEnd.after(dateNow)) || dateFirst.equals(dateNow) || dateEnd.equals(dateNow)) {
+                        productNow.add(product);
+
+                    }
+                }
+
+        }else if (animalsSpinerSheetText.equals("Все") && !categorySpinerSheetText.equals("Все") && dataSheet.getEditText().getText().toString().equals("")) {
+
+                for (Product product : products) {
+
+                    if (categorySpinerSheetText.equals(product.getCategory())) {
+                        productNow.add(product);
+
+                    }
+                }
+        }else if (!animalsSpinerSheetText.equals("Все") && categorySpinerSheetText.equals("Все") && dataSheet.getEditText().getText().toString().equals("")) {
+
+            for (Product product : products) {
+
+                if (animalsSpinerSheetText.equals(product.getName())) {
+                    productNow.add(product);
+                }
+            }
+
+        }else if (animalsSpinerSheetText.equals("Все") && !categorySpinerSheetText.equals("Все") && !dataSheet.getEditText().getText().toString().equals("")) {
+
+            for (Product product : products) {
+
+                Date dateNow = format.parse(product.getDate());
+
+                if (categorySpinerSheetText.equals(product.getCategory()) &&
+                        ((dateFirst.before(dateNow) && dateEnd.after(dateNow)) || dateFirst.equals(dateNow) || dateEnd.equals(dateNow))) {
+                    productNow.add(product);
+                }
+            }
+        }else if (!animalsSpinerSheetText.equals("Все") && categorySpinerSheetText.equals("Все") && !dataSheet.getEditText().getText().toString().equals("")) {
+
+            for (Product product : products) {
+
+                Date dateNow = format.parse(product.getDate());
+
+                if (animalsSpinerSheetText.equals(product.getName()) &&
+                        ((dateFirst.before(dateNow) && dateEnd.after(dateNow)) || dateFirst.equals(dateNow) || dateEnd.equals(dateNow))) {
+                    productNow.add(product);
+                }
+            }
+
+        }else if (!animalsSpinerSheetText.equals("Все") && !categorySpinerSheetText.equals("Все") && dataSheet.getEditText().getText().toString().equals("")) {
+
+            for (Product product : products) {
+
+                if (animalsSpinerSheetText.equals(product.getName()) && categorySpinerSheetText.equals(product.getCategory())) {
+                    productNow.add(product);
+                }
+            }
+
+
+        } else if (!animalsSpinerSheetText.equals("Все") && !categorySpinerSheetText.equals("Все") && !dataSheet.getEditText().getText().toString().equals("")) {
 
             for (Product product : products) {
 
@@ -332,15 +398,6 @@ public class MagazineManagerFragment extends Fragment {
 
                 if (animalsSpinerSheetText.equals(product.getName()) && categorySpinerSheetText.equals(product.getCategory()) &&
                         ((dateFirst.before(dateNow) && dateEnd.after(dateNow)) || dateFirst.equals(dateNow) || dateEnd.equals(dateNow))) {
-                    productNow.add(product);
-
-                }
-            }
-        } else if (dataSheet.getEditText().getText().toString().equals("")) {
-
-            for (Product product : products) {
-
-                if (animalsSpinerSheetText.equals(product.getName()) && categorySpinerSheetText.equals(product.getCategory())) {
                     productNow.add(product);
                 }
             }
