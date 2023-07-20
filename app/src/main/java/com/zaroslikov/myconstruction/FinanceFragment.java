@@ -52,10 +52,11 @@ public class FinanceFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        myDB = new MyDatabaseHelper(getActivity());
+
 
         View layout = inflater.inflate(R.layout.fragment_finance, container, false);
         //убириаем фаб кнопку
+        myDB = new MyDatabaseHelper(getActivity());
         ExtendedFloatingActionButton fab = (ExtendedFloatingActionButton) getActivity().findViewById(R.id.extended_fab);
         fab.setVisibility(View.GONE);
 

@@ -46,7 +46,7 @@ public class MagazineManagerFragment extends Fragment {
     private RecyclerView recyclerView;
     private ImageView empty_imageview;
     private Date dateFirst, dateEnd;
-    private Boolean magazineAddBool;
+    private Boolean magazineAddBool, clickBool;
     private List<Product> products, productNow;
     private TextView no_data, sixColumn, dicsPrice;
     private AutoCompleteTextView animalsSpinerSheet, categorySpinerSheet;
@@ -104,12 +104,20 @@ public class MagazineManagerFragment extends Fragment {
             cursorManager = myDB.readAddMagazine(idProject);
             visibility = View.VISIBLE;
             magazineAddBool = true;
+            clickBool = true;
             myRow = R.layout.my_row_add;
         } else if (appBarManager.equals("Мои Списания")) {
             cursorManager = myDB.readWriteOffMagazine(idProject);
             visibility = View.GONE;
             magazineAddBool = false;
+            clickBool = true;
             myRow = R.layout.my_row_write_off;
+        } else {
+            cursorManager = myDB.readAddMagazine(idProject);
+            visibility = View.VISIBLE;
+            magazineAddBool = true;
+            clickBool = false;
+            myRow = R.layout.my_row_add;
         }
 
         //Создание отображения списка
@@ -127,20 +135,23 @@ public class MagazineManagerFragment extends Fragment {
         //Создание модального bottomSheet
         showBottomSheetDialog();
 
+
         //Создание адаптера
         customAdapterMagazine = new CustomAdapterMagazine(productNow, myRow);
 
         recyclerView.setAdapter(customAdapterMagazine);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        //Запускаем при нажатии
-        customAdapterMagazine.setListener(new CustomAdapterMagazine.Listener() {
-            @Override
-            public void onClick(int position, Product product) {
-                addChart(product);
-            }
-        });
 
+        if(clickBool) {
+            //Запускаем при нажатии
+            customAdapterMagazine.setListener(new CustomAdapterMagazine.Listener() {
+                @Override
+                public void onClick(int position, Product product) {
+                    addChart(product);
+                }
+            });
+        }
 // Настройка календаря на период
         CalendarConstraints constraintsBuilder = new CalendarConstraints.Builder()
                 .setValidator(DateValidatorPointBackward.now())

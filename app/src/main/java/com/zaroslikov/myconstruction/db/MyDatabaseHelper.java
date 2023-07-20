@@ -247,6 +247,33 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    public Cursor selectProjectAllSumProductAndCount(int propertyId, String product){
+        String query = "SELECT " + MyConstanta.TITLEPRODUCT+ ", "+
+                MyConstanta.SUFFIX +
+                ", sum(" + MyConstanta.PRICE + "), " + MyConstanta.DATE + ", sum(" + MyConstanta.QUANTITY + ")" +
+                " FROM " + MyConstanta.TABLE_NAME_ADD + " ad " +
+                "JOIN " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT + " pp " +
+                "ON pp." + MyConstanta._ID  + " = " + "ad." + MyConstanta.IDPP +
+
+                " JOIN " + MyConstanta.TABLE_NAME_PRODUCT + " prod " +
+                "ON prod." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPRODUCT +
+
+                " JOIN " + MyConstanta.TABLE_NAME + " proj " +
+                "ON proj." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPROJECT +
+
+                " WHERE proj." + MyConstanta._ID + "=? and " + MyConstanta.TITLEPRODUCT + "=?";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+
+            cursor =  db.rawQuery(query, new String[]{String.valueOf(propertyId),product});
+        }
+
+        return cursor;
+    }
+
     public Cursor selectProjectAllProductAndCategoryAdd(int propertyId){
         String query = "SELECT " + MyConstanta.TITLEPRODUCT+ ", "+
                 MyConstanta.SUFFIX + ", " + MyConstanta.CATEGORY +
@@ -491,9 +518,10 @@ public Cursor seachProduct(String productName){
         return id;
     }
 
-    public void updateToDbProject(int id, int status) {
+    public void updateToDbProject(int id, int status, String dateEnd) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
+        cv.put(MyConstanta.DATEFINALPROJECT, dateEnd);
         cv.put(MyConstanta.STATUSPROJECT,status);
         db.update(MyConstanta.TABLE_NAME,cv, MyConstanta._ID + "= ?", new String[]{String.valueOf(id)});
     }
@@ -507,5 +535,6 @@ public Cursor seachProduct(String productName){
             Toast.makeText(context, "Успешно удаленно.", Toast.LENGTH_SHORT).show();
         }
     }
+
 
 }

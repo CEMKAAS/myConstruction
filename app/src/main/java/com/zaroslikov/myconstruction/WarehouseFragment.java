@@ -1,5 +1,6 @@
 package com.zaroslikov.myconstruction;
 
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -11,17 +12,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.zaroslikov.myconstruction.db.MyConstanta;
 import com.zaroslikov.myconstruction.db.MyDatabaseHelper;
 import com.zaroslikov.myconstruction.project.MenuProjectFragment;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class WarehouseFragment extends Fragment {
 
@@ -84,8 +89,32 @@ public class WarehouseFragment extends Fragment {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myDB.updateToDbProject(idProject, 1);
-                replaceFragment(new MenuProjectFragment());
+
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
+                builder.setTitle("Завершить проект?");
+                builder.setMessage("Вы уверены, что хотите завершить проект?\n" +
+                        "Ваш проект попадет в архив со всеми данными в случае необходимости его можно востановить");
+
+                builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                        String date = calendar.get(Calendar.DAY_OF_MONTH)+ "." +(calendar.get(Calendar.MONTH) + 1) + "." + calendar.get(Calendar.YEAR);
+                        myDB.updateToDbProject(idProject,1, date);
+                        replaceFragment(new MenuProjectFragment());
+
+
+                    }
+                });
+                builder.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                builder.show();
+
             }
         });
         return layout;
