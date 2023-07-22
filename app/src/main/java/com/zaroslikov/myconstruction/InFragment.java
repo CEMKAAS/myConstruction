@@ -24,6 +24,15 @@ public class InFragment extends Fragment {
 
         MaterialToolbar appBar = getActivity().findViewById(R.id.topAppBar);
         appBar.setTitle("Информация");
+        appBar.getMenu().findItem(R.id.filler).setVisible(false);
+        appBar.getMenu().findItem(R.id.deleteAll).setVisible(false);
+        appBar.getMenu().findItem(R.id.moreAll).setVisible(false);
+        appBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
 
         return inflater.inflate(R.layout.fragment_in, container, false);
     }

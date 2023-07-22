@@ -26,11 +26,11 @@
                 app:titleCentered="true"
                 app:titleTextAppearance="@style/TextAppearance.MyApp.DisplaySmall4" />
 
-<!--            <com.yandex.mobile.ads.banner.BannerAdView-->
-<!--                android:id="@+id/banner_ad_view"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:background="?android:attr/windowBackground" />-->
+            <com.yandex.mobile.ads.banner.BannerAdView
+                android:id="@+id/banner_ad_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/windowBackground" />
         </com.google.android.material.appbar.AppBarLayout>
 
 

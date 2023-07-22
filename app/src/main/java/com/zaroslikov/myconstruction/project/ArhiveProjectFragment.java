@@ -31,9 +31,6 @@ public class ArhiveProjectFragment extends Fragment {
 
         View layout = inflater.inflate(R.layout.fragment_arhive_project, container, false);
 
-        ExtendedFloatingActionButton fab = (ExtendedFloatingActionButton) getActivity().findViewById(R.id.extended_fab);
-        fab.setVisibility(View.GONE);
-
         myDB = new MyDatabaseHelper(getActivity());
 
         id = new ArrayList<>();
@@ -44,7 +41,7 @@ public class ArhiveProjectFragment extends Fragment {
 
         storeDataInArrays();
 
-        AdapterProject adapterProject = new AdapterProject(id, name, data);
+        AdapterProject adapterProject = new AdapterProject(id, name, data,false);
         recyclerView.setAdapter(adapterProject);
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         recyclerView.setLayoutManager(layoutManager);
@@ -71,6 +68,7 @@ public class ArhiveProjectFragment extends Fragment {
                     id.add(cursor.getInt(0));
                     name.add(cursor.getString(1));
                     data.add(cursor.getString(2) + " - " + cursor.getString(3));
+
                 }
             }
         }

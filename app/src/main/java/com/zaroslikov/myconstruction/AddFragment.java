@@ -67,11 +67,28 @@ public class AddFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickButton(new MagazineManagerFragment());
+                replaceFragment(new MagazineManagerFragment());
             }
         });
         MaterialToolbar appBar = getActivity().findViewById(R.id.topAppBar);
         appBar.setTitle("Мои Покупки");
+        appBar.getMenu().findItem(R.id.filler).setVisible(false);
+        appBar.getMenu().findItem(R.id.moreAll).setVisible(true);
+        appBar.setOnMenuItemClickListener(item -> {
+            int position = item.getItemId();
+            if (position == R.id.moreAll) {
+                replaceFragment(new InFragment());
+                appBar.setTitle("Информация");
+            }
+            return true;
+        });
+
+        appBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
 
         productName = layout.findViewById(R.id.productName_editText);
         add_edit = layout.findViewById(R.id.add_edit);
@@ -80,7 +97,6 @@ public class AddFragment extends Fragment {
         category = layout.findViewById(R.id.category_edit);
         date = layout.findViewById(R.id.date);
         nowUnit = layout.findViewById(R.id.now_warehouse);
-
 
         productNameMenu = layout.findViewById(R.id.product_name_add_menu);
         suffixMenu = layout.findViewById(R.id.suffix_add_menu);
@@ -122,11 +138,35 @@ public class AddFragment extends Fragment {
         productName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String productClick = productNameList.get(position);
+                String productClick = productList.get(position).getName();
 
-                addDB(productClick, suffixSpiner.getText().toString());
+                String suffixClick = productList.get(position).getSuffix();
+
+                if (suffixSpiner.getText().toString().equals("")){
+                    addDB(productClick, suffixClick);
+                    suffixSpiner.setText(suffixClick, false);
+                }else {
+                    addDB(productClick, suffixSpiner.getText().toString());
+                }
+
             }
         });
+
+        suffixSpiner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String productClick = productName.getText().toString();
+                String suffixClick = productList.get(position).getSuffix();
+
+                if (suffixSpiner.getText().toString().equals("")){
+                    addDB(productClick, suffixClick);
+                    suffixSpiner.setText(suffixClick, false);
+                }else {
+                    addDB(productClick, suffixSpiner.getText().toString());
+                }
+            }
+        });
+
 
         Button add = layout.findViewById(R.id.add_button);
         add.setOnClickListener(new View.OnClickListener() {
@@ -155,6 +195,7 @@ public class AddFragment extends Fragment {
 
         while (cursor.moveToNext()) {
             productNameList.add(cursor.getString(1));
+            productList.add(new Product(cursor.getInt(0), cursor.getString(1), cursor.getString(2)));
         }
         cursor.close();
 
@@ -224,8 +265,6 @@ public class AddFragment extends Fragment {
             String categoryProduct = category.getText().toString();
             String dateProduct = date.getEditText().getText().toString();
 
-            String sa = dateProduct;
-
             int idProduct = 0;
             int idPP = 0;
 
@@ -291,8 +330,10 @@ public class AddFragment extends Fragment {
             cursorWriteOff.close();
 
             double nowUnitProduct = productUnitAdd - productUnitWriteOff;
-
-            nowUnit.setText(" На складе " + productName + " " + nowUnitProduct + " " + suffixName);
+            if (productName == null || suffixName == null){
+                nowUnit.setText(" На складе  нет такого товара ");
+            }else {
+            nowUnit.setText(" На складе " + productName + " " + nowUnitProduct + " " + suffixName);}
     }
 
     public void setArrayAdapter(){
@@ -305,7 +346,9 @@ public class AddFragment extends Fragment {
         category.setAdapter(arrayAdapterCategory);
     }
 
-    public void onClickButton(Fragment fragment) {
+
+
+    private void replaceFragment(Fragment fragment) {
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.conteiner, fragment, "visible_fragment")
                 .addToBackStack(null)

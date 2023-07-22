@@ -65,6 +65,7 @@ public class FinanceFragment extends Fragment {
         appBar.setNavigationIcon(R.drawable.baseline_arrow_back_24);
         appBar.getMenu().findItem(R.id.deleteAll).setVisible(false);
         appBar.getMenu().findItem(R.id.filler).setVisible(true);
+        appBar.getMenu().findItem(R.id.moreAll).setVisible(true);
         appBar.setOnMenuItemClickListener(item -> {
             int position = item.getItemId();
             if (position == R.id.filler) {
@@ -157,8 +158,8 @@ public class FinanceFragment extends Fragment {
                             throw new RuntimeException(e);
                         }
                         dataSheet.getEditText().setText(formattedDate1 + "-" + formattedDate2);
-                        productText.setText("По категориям за\n" + formattedDate1 + "-" + formattedDate2);
-                        categoryText.setText("По продукции за\n" + formattedDate1 + "-" + formattedDate2);
+                        productText.setText("По продукции за\n" + formattedDate1 + "-" + formattedDate2);
+                        categoryText.setText("По категориям за\n" + formattedDate1 + "-" + formattedDate2);
                     }
                 });
             }

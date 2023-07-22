@@ -55,6 +55,15 @@ public class WarehouseFragment extends Fragment {
         appBar.setNavigationIcon(R.drawable.baseline_arrow_back_24);
         appBar.getMenu().findItem(R.id.deleteAll).setVisible(false);
         appBar.getMenu().findItem(R.id.filler).setVisible(false);
+        appBar.getMenu().findItem(R.id.moreAll).setVisible(true);
+        appBar.setOnMenuItemClickListener(item -> {
+            int position = item.getItemId();
+            if (position == R.id.moreAll) {
+                replaceFragment(new InFragment());
+                appBar.setTitle("Информация");
+            }
+            return true;
+        });
         appBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,8 +101,7 @@ public class WarehouseFragment extends Fragment {
 
                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
                 builder.setTitle("Завершить проект?");
-                builder.setMessage("Вы уверены, что хотите завершить проект?\n" +
-                        "Ваш проект попадет в архив со всеми данными в случае необходимости его можно востановить");
+                builder.setMessage("Ваш проект попадет в архив со всеми данными, в случаи необходимости его можно будет востановить");
 
                 builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     @Override
@@ -102,8 +110,6 @@ public class WarehouseFragment extends Fragment {
                         String date = calendar.get(Calendar.DAY_OF_MONTH)+ "." +(calendar.get(Calendar.MONTH) + 1) + "." + calendar.get(Calendar.YEAR);
                         myDB.updateToDbProject(idProject,1, date);
                         replaceFragment(new MenuProjectFragment());
-
-
                     }
                 });
                 builder.setNegativeButton("Нет", new DialogInterface.OnClickListener() {

@@ -43,6 +43,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS MyConstanta.DROP_TABLE_WRITEOFF");
         onCreate(db);
     }
+
     public void deleteAllData() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + MyConstanta.TABLE_NAME);
@@ -75,7 +76,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public Cursor product (String nameTable,String nameCount, String nameProduct) {
+    public Cursor product(String nameTable, String nameCount, String nameProduct) {
 
         String query = "SELECT * FROM " + MyConstanta.TABLE_NAME_PRODUCT;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -94,7 +95,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         cv.put(MyConstanta.DATEBEGINPROJECT, date);
         cv.put(MyConstanta.DATEFINALPROJECT, date);
         cv.put(MyConstanta.PICTUREROJECT, 0);
-        cv.put(MyConstanta.STATUSPROJECT,status);
+        cv.put(MyConstanta.STATUSPROJECT, status);
         db.insert(MyConstanta.TABLE_NAME, null, cv);
     }
 
@@ -107,7 +108,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
-    public long insertToDbProjectProduct( int idProject, int idProduct) {
+    public long insertToDbProjectProduct(int idProject, int idProduct) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(MyConstanta.IDPROJECT, idProject);
@@ -119,7 +120,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     public void insertToDbProductAdd(double count, String category, double price, String date, int idPP) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(MyConstanta.QUANTITY,count);
+        cv.put(MyConstanta.QUANTITY, count);
         cv.put(MyConstanta.CATEGORY, category);
         cv.put(MyConstanta.PRICE, price);
         cv.put(MyConstanta.DATE, date);
@@ -130,7 +131,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     public void insertToDbProductWriteOff(double count, String category, String date, int idPP) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(MyConstanta.QUANTITY,count);
+        cv.put(MyConstanta.QUANTITY, count);
         cv.put(MyConstanta.CATEGORY, category);
         cv.put(MyConstanta.DATE, date);
         cv.put(MyConstanta.IDPP, idPP);
@@ -138,18 +139,18 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public Cursor selectProductJoin(int propertyId, String productName, String tableName, String suffix){
-        String query = "SELECT " + MyConstanta.TITLEPRODUCT+
+    public Cursor selectProductJoin(int propertyId, String productName, String tableName, String suffix) {
+        String query = "SELECT " + MyConstanta.TITLEPRODUCT +
                 ", sum(" + MyConstanta.QUANTITY + "), " + MyConstanta.SUFFIX +
                 " FROM " + tableName + " ad " +
                 "JOIN " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT + " pp " +
-                "ON pp." + MyConstanta._ID  + " = " + "ad." + MyConstanta.IDPP +
+                "ON pp." + MyConstanta._ID + " = " + "ad." + MyConstanta.IDPP +
 
                 " JOIN " + MyConstanta.TABLE_NAME_PRODUCT + " prod " +
-                "ON prod." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPRODUCT +
+                "ON prod." + MyConstanta._ID + " = " + " pp." + MyConstanta.IDPRODUCT +
 
                 " JOIN " + MyConstanta.TABLE_NAME + " proj " +
-                "ON proj." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPROJECT +
+                "ON proj." + MyConstanta._ID + " = " + " pp." + MyConstanta.IDPROJECT +
 
                 " WHERE proj." + MyConstanta._ID + "=? and " + MyConstanta.TITLEPRODUCT + "=? and " + MyConstanta.SUFFIX + "=? " +
                 "group by " + MyConstanta.TITLEPRODUCT + ", " + MyConstanta.SUFFIX;
@@ -159,25 +160,25 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = null;
         if (db != null) {
 
-            cursor =  db.rawQuery(query, new String[]{String.valueOf(propertyId),productName, suffix});
+            cursor = db.rawQuery(query, new String[]{String.valueOf(propertyId), productName, suffix});
         }
 
         return cursor;
     }
 
 
-    public Cursor selectProjectAllSum (int propertyId){
+    public Cursor selectProjectAllSum(int propertyId) {
         String query = "SELECT " +
                 "sum(" + MyConstanta.PRICE + ")" +
                 " FROM " + MyConstanta.TABLE_NAME_ADD + " ad " +
                 "JOIN " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT + " pp " +
-                "ON pp." + MyConstanta._ID  + " = " + "ad." + MyConstanta.IDPP +
+                "ON pp." + MyConstanta._ID + " = " + "ad." + MyConstanta.IDPP +
 
                 " JOIN " + MyConstanta.TABLE_NAME_PRODUCT + " prod " +
-                "ON prod." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPRODUCT +
+                "ON prod." + MyConstanta._ID + " = " + " pp." + MyConstanta.IDPRODUCT +
 
                 " JOIN " + MyConstanta.TABLE_NAME + " proj " +
-                "ON proj." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPROJECT +
+                "ON proj." + MyConstanta._ID + " = " + " pp." + MyConstanta.IDPROJECT +
 
                 " WHERE proj." + MyConstanta._ID + "=?";
 
@@ -186,25 +187,25 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = null;
         if (db != null) {
 
-            cursor =  db.rawQuery(query, new String[]{String.valueOf(propertyId)});
+            cursor = db.rawQuery(query, new String[]{String.valueOf(propertyId)});
         }
 
         return cursor;
     }
 
 
-    public Cursor selectProjectAllSumCategory(int propertyId, String category){
+    public Cursor selectProjectAllSumCategory(int propertyId, String category) {
         String query = "SELECT " + MyConstanta.CATEGORY +
                 ", sum(" + MyConstanta.PRICE + "), " + MyConstanta.DATE +
                 " FROM " + MyConstanta.TABLE_NAME_ADD + " ad " +
                 "JOIN " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT + " pp " +
-                "ON pp." + MyConstanta._ID  + " = " + "ad." + MyConstanta.IDPP +
+                "ON pp." + MyConstanta._ID + " = " + "ad." + MyConstanta.IDPP +
 
                 " JOIN " + MyConstanta.TABLE_NAME_PRODUCT + " prod " +
-                "ON prod." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPRODUCT +
+                "ON prod." + MyConstanta._ID + " = " + " pp." + MyConstanta.IDPRODUCT +
 
                 " JOIN " + MyConstanta.TABLE_NAME + " proj " +
-                "ON proj." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPROJECT +
+                "ON proj." + MyConstanta._ID + " = " + " pp." + MyConstanta.IDPROJECT +
 
                 " WHERE proj." + MyConstanta._ID + "=? and " + MyConstanta.CATEGORY + "=?";
 
@@ -213,26 +214,26 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = null;
         if (db != null) {
 
-            cursor =  db.rawQuery(query, new String[]{String.valueOf(propertyId),category});
+            cursor = db.rawQuery(query, new String[]{String.valueOf(propertyId), category});
         }
 
         return cursor;
     }
 
 
-    public Cursor selectProjectAllSumProduct(int propertyId, String product){
-        String query = "SELECT " + MyConstanta.TITLEPRODUCT+ ", "+
+    public Cursor selectProjectAllSumProduct(int propertyId, String product) {
+        String query = "SELECT " + MyConstanta.TITLEPRODUCT + ", " +
                 MyConstanta.SUFFIX +
                 ", sum(" + MyConstanta.PRICE + "), " + MyConstanta.DATE +
                 " FROM " + MyConstanta.TABLE_NAME_ADD + " ad " +
                 "JOIN " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT + " pp " +
-                "ON pp." + MyConstanta._ID  + " = " + "ad." + MyConstanta.IDPP +
+                "ON pp." + MyConstanta._ID + " = " + "ad." + MyConstanta.IDPP +
 
                 " JOIN " + MyConstanta.TABLE_NAME_PRODUCT + " prod " +
-                "ON prod." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPRODUCT +
+                "ON prod." + MyConstanta._ID + " = " + " pp." + MyConstanta.IDPRODUCT +
 
                 " JOIN " + MyConstanta.TABLE_NAME + " proj " +
-                "ON proj." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPROJECT +
+                "ON proj." + MyConstanta._ID + " = " + " pp." + MyConstanta.IDPROJECT +
 
                 " WHERE proj." + MyConstanta._ID + "=? and " + MyConstanta.TITLEPRODUCT + "=?";
 
@@ -241,25 +242,25 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = null;
         if (db != null) {
 
-            cursor =  db.rawQuery(query, new String[]{String.valueOf(propertyId),product});
+            cursor = db.rawQuery(query, new String[]{String.valueOf(propertyId), product});
         }
 
         return cursor;
     }
 
-    public Cursor selectProjectAllSumProductAndCount(int propertyId, String product){
-        String query = "SELECT " + MyConstanta.TITLEPRODUCT+ ", "+
+    public Cursor selectProjectAllSumProductAndCount(int propertyId, String product) {
+        String query = "SELECT " + MyConstanta.TITLEPRODUCT + ", " +
                 MyConstanta.SUFFIX +
                 ", sum(" + MyConstanta.PRICE + "), " + MyConstanta.DATE + ", sum(" + MyConstanta.QUANTITY + ")" +
                 " FROM " + MyConstanta.TABLE_NAME_ADD + " ad " +
                 "JOIN " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT + " pp " +
-                "ON pp." + MyConstanta._ID  + " = " + "ad." + MyConstanta.IDPP +
+                "ON pp." + MyConstanta._ID + " = " + "ad." + MyConstanta.IDPP +
 
                 " JOIN " + MyConstanta.TABLE_NAME_PRODUCT + " prod " +
-                "ON prod." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPRODUCT +
+                "ON prod." + MyConstanta._ID + " = " + " pp." + MyConstanta.IDPRODUCT +
 
                 " JOIN " + MyConstanta.TABLE_NAME + " proj " +
-                "ON proj." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPROJECT +
+                "ON proj." + MyConstanta._ID + " = " + " pp." + MyConstanta.IDPROJECT +
 
                 " WHERE proj." + MyConstanta._ID + "=? and " + MyConstanta.TITLEPRODUCT + "=?";
 
@@ -268,53 +269,53 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = null;
         if (db != null) {
 
-            cursor =  db.rawQuery(query, new String[]{String.valueOf(propertyId),product});
+            cursor = db.rawQuery(query, new String[]{String.valueOf(propertyId), product});
         }
 
         return cursor;
     }
 
-    public Cursor selectProjectAllProductAndCategoryAdd(int propertyId){
-        String query = "SELECT " + MyConstanta.TITLEPRODUCT+ ", "+
+    public Cursor selectProjectAllProductAndCategoryAdd(int propertyId) {
+        String query = "SELECT " + MyConstanta.TITLEPRODUCT + ", " +
                 MyConstanta.SUFFIX + ", " + MyConstanta.CATEGORY +
                 " FROM " + MyConstanta.TABLE_NAME_ADD + " ad " +
                 "JOIN " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT + " pp " +
-                "ON pp." + MyConstanta._ID  + " = " + "ad." + MyConstanta.IDPP +
+                "ON pp." + MyConstanta._ID + " = " + "ad." + MyConstanta.IDPP +
 
                 " JOIN " + MyConstanta.TABLE_NAME_PRODUCT + " prod " +
-                "ON prod." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPRODUCT +
+                "ON prod." + MyConstanta._ID + " = " + " pp." + MyConstanta.IDPRODUCT +
 
                 " JOIN " + MyConstanta.TABLE_NAME + " proj " +
-                "ON proj." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPROJECT +
+                "ON proj." + MyConstanta._ID + " = " + " pp." + MyConstanta.IDPROJECT +
 
-                " WHERE proj." + MyConstanta._ID + "=?";
+                " WHERE proj." + MyConstanta._ID + "=? " +
+                "group by " + MyConstanta.TITLEPRODUCT + ", " + MyConstanta.SUFFIX;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor = db.rawQuery(query, new String[]{String.valueOf(propertyId)});
+        }
+
+        return cursor;
+    }
+
+
+    public Cursor seachProduct(String productName) {
+        String query = "SELECT * FROM " + MyConstanta.TABLE_NAME_PRODUCT +
+                " Where " + MyConstanta.TITLEPRODUCT + "=?";
 
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = null;
         if (db != null) {
-            cursor =  db.rawQuery(query, new String[]{String.valueOf(propertyId)});
+            cursor = db.rawQuery(query, new String[]{productName});
         }
 
         return cursor;
     }
 
-
-public Cursor seachProduct(String productName){
-    String query = "SELECT * FROM " + MyConstanta.TABLE_NAME_PRODUCT +
-            " Where " + MyConstanta.TITLEPRODUCT + "=?";
-
-    SQLiteDatabase db = this.getReadableDatabase();
-
-    Cursor cursor = null;
-    if (db != null) {
-        cursor =  db.rawQuery(query, new String[]{productName});
-    }
-
-    return cursor;
-}
-
-    public Cursor seachProductAndSuffix(String productName, String suffix){
+    public Cursor seachProductAndSuffix(String productName, String suffix) {
         String query = "SELECT * FROM " + MyConstanta.TABLE_NAME_PRODUCT +
                 " Where " + MyConstanta.TITLEPRODUCT + "=? and " + MyConstanta.SUFFIX + "=?";
 
@@ -322,13 +323,13 @@ public Cursor seachProduct(String productName){
 
         Cursor cursor = null;
         if (db != null) {
-            cursor =  db.rawQuery(query, new String[]{productName, suffix});
+            cursor = db.rawQuery(query, new String[]{productName, suffix});
         }
 
         return cursor;
     }
 
-    public Cursor seachPP(int idProject, int idProduct){
+    public Cursor seachPP(int idProject, int idProduct) {
         String query = "SELECT * FROM " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT +
                 " Where " + MyConstanta.IDPROJECT + "=? and " + MyConstanta.IDPRODUCT + "=?";
 
@@ -336,46 +337,46 @@ public Cursor seachProduct(String productName){
 
         Cursor cursor = null;
         if (db != null) {
-            cursor =  db.rawQuery(query, new String[]{String.valueOf(idProject), String.valueOf(idProduct)});
+            cursor = db.rawQuery(query, new String[]{String.valueOf(idProject), String.valueOf(idProduct)});
         }
 
         return cursor;
     }
 
-    public Cursor seachCategory(int idProject){
+    public Cursor seachCategory(int idProject) {
         String query = "SELECT " + MyConstanta.CATEGORY +
                 " FROM " + MyConstanta.TABLE_NAME_ADD + " ad " +
                 "JOIN " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT + " pp " +
-                "ON pp." + MyConstanta._ID  + " = " + "ad." + MyConstanta.IDPP +
+                "ON pp." + MyConstanta._ID + " = " + "ad." + MyConstanta.IDPP +
 
                 " JOIN " + MyConstanta.TABLE_NAME_PRODUCT + " prod " +
-                "ON prod." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPRODUCT +
+                "ON prod." + MyConstanta._ID + " = " + " pp." + MyConstanta.IDPRODUCT +
 
                 " JOIN " + MyConstanta.TABLE_NAME + " proj " +
-                "ON proj." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPROJECT +
+                "ON proj." + MyConstanta._ID + " = " + " pp." + MyConstanta.IDPROJECT +
 
-                " WHERE proj." + MyConstanta._ID + "=? " ;
+                " WHERE proj." + MyConstanta._ID + "=? ";
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = null;
         if (db != null) {
-            cursor =  db.rawQuery(query, new String[]{String.valueOf(idProject)});
+            cursor = db.rawQuery(query, new String[]{String.valueOf(idProject)});
         }
 
         return cursor;
     }
 
-    public Cursor seachProductToProject(int idProject){
+    public Cursor seachProductToProject(int idProject) {
         String query = "SELECT " + MyConstanta.TITLEPRODUCT + ", " + MyConstanta.CATEGORY +
                 " FROM " + MyConstanta.TABLE_NAME_ADD + " ad " +
                 "JOIN " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT + " pp " +
-                "ON pp." + MyConstanta._ID  + " = " + "ad." + MyConstanta.IDPP +
+                "ON pp." + MyConstanta._ID + " = " + "ad." + MyConstanta.IDPP +
 
                 " JOIN " + MyConstanta.TABLE_NAME_PRODUCT + " prod " +
-                "ON prod." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPRODUCT +
+                "ON prod." + MyConstanta._ID + " = " + " pp." + MyConstanta.IDPRODUCT +
 
                 " JOIN " + MyConstanta.TABLE_NAME + " proj " +
-                "ON proj." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPROJECT +
+                "ON proj." + MyConstanta._ID + " = " + " pp." + MyConstanta.IDPROJECT +
 
                 " WHERE proj." + MyConstanta._ID + "=?";
 
@@ -383,23 +384,24 @@ public Cursor seachProduct(String productName){
 
         Cursor cursor = null;
         if (db != null) {
-            cursor =  db.rawQuery(query, new String[]{String.valueOf(idProject)});
+            cursor = db.rawQuery(query, new String[]{String.valueOf(idProject)});
         }
 
         return cursor;
     }
-    public Cursor readAddMagazine(int idProject){
-        String query = "SELECT ad."+ MyConstanta._ID + ", " + MyConstanta.TITLEPRODUCT + ", " + MyConstanta.CATEGORY +", " +
+
+    public Cursor readAddMagazine(int idProject) {
+        String query = "SELECT ad." + MyConstanta._ID + ", " + MyConstanta.TITLEPRODUCT + ", " + MyConstanta.CATEGORY + ", " +
                 MyConstanta.QUANTITY + ", " + MyConstanta.PRICE + ", " + MyConstanta.DATE + ", " + MyConstanta.SUFFIX +
                 " FROM " + MyConstanta.TABLE_NAME_ADD + " ad " +
                 "JOIN " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT + " pp " +
-                "ON pp." + MyConstanta._ID  + " = " + "ad." + MyConstanta.IDPP +
+                "ON pp." + MyConstanta._ID + " = " + "ad." + MyConstanta.IDPP +
 
                 " JOIN " + MyConstanta.TABLE_NAME_PRODUCT + " prod " +
-                "ON prod." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPRODUCT +
+                "ON prod." + MyConstanta._ID + " = " + " pp." + MyConstanta.IDPRODUCT +
 
                 " JOIN " + MyConstanta.TABLE_NAME + " proj " +
-                "ON proj." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPROJECT +
+                "ON proj." + MyConstanta._ID + " = " + " pp." + MyConstanta.IDPROJECT +
 
                 " WHERE proj." + MyConstanta._ID + "=?";
 
@@ -407,24 +409,24 @@ public Cursor seachProduct(String productName){
 
         Cursor cursor = null;
         if (db != null) {
-            cursor =  db.rawQuery(query, new String[]{String.valueOf(idProject)});
+            cursor = db.rawQuery(query, new String[]{String.valueOf(idProject)});
         }
 
         return cursor;
     }
 
-    public Cursor readWriteOffMagazine(int idProject){
-        String query = "SELECT ad."+ MyConstanta._ID + ", "+ MyConstanta.TITLEPRODUCT + ", " + MyConstanta.CATEGORY +", " +
+    public Cursor readWriteOffMagazine(int idProject) {
+        String query = "SELECT ad." + MyConstanta._ID + ", " + MyConstanta.TITLEPRODUCT + ", " + MyConstanta.CATEGORY + ", " +
                 MyConstanta.QUANTITY + ", " + MyConstanta.DATE + ", " + MyConstanta.SUFFIX +
                 " FROM " + MyConstanta.TABLE_NAME_WRITEOFF + " ad " +
                 "JOIN " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT + " pp " +
-                "ON pp." + MyConstanta._ID  + " = " + "ad." + MyConstanta.IDPP +
+                "ON pp." + MyConstanta._ID + " = " + "ad." + MyConstanta.IDPP +
 
                 " JOIN " + MyConstanta.TABLE_NAME_PRODUCT + " prod " +
-                "ON prod." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPRODUCT +
+                "ON prod." + MyConstanta._ID + " = " + " pp." + MyConstanta.IDPRODUCT +
 
                 " JOIN " + MyConstanta.TABLE_NAME + " proj " +
-                "ON proj." + MyConstanta._ID  + " = " + " pp." + MyConstanta.IDPROJECT +
+                "ON proj." + MyConstanta._ID + " = " + " pp." + MyConstanta.IDPROJECT +
 
                 " WHERE proj." + MyConstanta._ID + "=?";
 
@@ -432,18 +434,18 @@ public Cursor seachProduct(String productName){
 
         Cursor cursor = null;
         if (db != null) {
-            cursor =  db.rawQuery(query, new String[]{String.valueOf(idProject)});
+            cursor = db.rawQuery(query, new String[]{String.valueOf(idProject)});
         }
 
         return cursor;
     }
 
-    public long updateToDbProjectProduct( int idPP, int idProject, int idProduct) {
+    public long updateToDbProjectProduct(int idPP, int idProject, int idProduct) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(MyConstanta.IDPROJECT, idProject);
         cv.put(MyConstanta.IDPRODUCT, idProduct);
-        long id = db.update(MyConstanta.TABLE_NAME_PROJECT_PRODUCT,cv,"id=?", new String[]{String.valueOf(idPP)});
+        long id = db.update(MyConstanta.TABLE_NAME_PROJECT_PRODUCT, cv, "id=?", new String[]{String.valueOf(idPP)});
 
         if (id == -1) {
             Toast.makeText(context, "Ошибка!", Toast.LENGTH_SHORT).show();
@@ -453,7 +455,7 @@ public Cursor seachProduct(String productName){
         return id;
     }
 
-    public Cursor seachAdd(double count, String category, double price, String date, int idPP){
+    public Cursor seachAdd(double count, String category, double price, String date, int idPP) {
         String query = "SELECT * FROM " + MyConstanta.TABLE_NAME_ADD +
                 " Where " + MyConstanta.QUANTITY + "=? and " + MyConstanta.CATEGORY + "=? and " +
                 MyConstanta.PRICE + "=? and " + MyConstanta.DATE + "=? and " +
@@ -463,13 +465,13 @@ public Cursor seachProduct(String productName){
 
         Cursor cursor = null;
         if (db != null) {
-            cursor =  db.rawQuery(query, new String[]{String.valueOf(count), category, String.valueOf(price),date,String.valueOf(idPP)});
+            cursor = db.rawQuery(query, new String[]{String.valueOf(count), category, String.valueOf(price), date, String.valueOf(idPP)});
         }
 
         return cursor;
     }
 
-    public Cursor seachWriteOff(double count, String category, String date, int idPP){
+    public Cursor seachWriteOff(double count, String category, String date, int idPP) {
         String query = "SELECT * FROM " + MyConstanta.TABLE_NAME_ADD +
                 " Where " + MyConstanta.QUANTITY + "=? and " + MyConstanta.CATEGORY + "=? and "
                 + MyConstanta.DATE + "=? and " + MyConstanta.IDPP + "=?";
@@ -478,7 +480,7 @@ public Cursor seachProduct(String productName){
 
         Cursor cursor = null;
         if (db != null) {
-            cursor =  db.rawQuery(query, new String[]{String.valueOf(count), category,date,String.valueOf(idPP)});
+            cursor = db.rawQuery(query, new String[]{String.valueOf(count), category, date, String.valueOf(idPP)});
         }
 
         return cursor;
@@ -488,12 +490,12 @@ public Cursor seachProduct(String productName){
     public void updateToDbAdd(double count, String category, double price, String date, int idPP, int idAdd) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(MyConstanta.QUANTITY,count);
+        cv.put(MyConstanta.QUANTITY, count);
         cv.put(MyConstanta.CATEGORY, category);
         cv.put(MyConstanta.PRICE, price);
         cv.put(MyConstanta.DATE, date);
         cv.put(MyConstanta.IDPP, idPP);
-        long id = db.update(MyConstanta.TABLE_NAME_ADD,cv,"id=?", new String[]{String.valueOf(idAdd)});
+        long id = db.update(MyConstanta.TABLE_NAME_ADD, cv, "id=?", new String[]{String.valueOf(idAdd)});
 
     }
 
@@ -501,20 +503,20 @@ public Cursor seachProduct(String productName){
     public void updateToDbWriteOff(double count, String category, String date, int idPP, int idWO) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(MyConstanta.QUANTITY,count);
+        cv.put(MyConstanta.QUANTITY, count);
         cv.put(MyConstanta.CATEGORY, category);
         cv.put(MyConstanta.DATE, date);
         cv.put(MyConstanta.IDPP, idPP);
-        long id = db.update(MyConstanta.TABLE_NAME_WRITEOFF,cv,"id=?", new String[]{String.valueOf(idWO)});
+        long id = db.update(MyConstanta.TABLE_NAME_WRITEOFF, cv, "id=?", new String[]{String.valueOf(idWO)});
 
     }
 
     public long updateToDbProduct(String oldName, String name, String suffix) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(MyConstanta.TITLEPRODUCT,name);
+        cv.put(MyConstanta.TITLEPRODUCT, name);
         cv.put(MyConstanta.SUFFIX, suffix);
-        long id = db.update(MyConstanta.TABLE_NAME_PRODUCT,cv,"NameProduct=?", new String[]{oldName});
+        long id = db.update(MyConstanta.TABLE_NAME_PRODUCT, cv, "NameProduct=?", new String[]{oldName});
         return id;
     }
 
@@ -522,8 +524,8 @@ public Cursor seachProduct(String productName){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put(MyConstanta.DATEFINALPROJECT, dateEnd);
-        cv.put(MyConstanta.STATUSPROJECT,status);
-        db.update(MyConstanta.TABLE_NAME,cv, MyConstanta._ID + "= ?", new String[]{String.valueOf(id)});
+        cv.put(MyConstanta.STATUSPROJECT, status);
+        db.update(MyConstanta.TABLE_NAME, cv, MyConstanta._ID + "= ?", new String[]{String.valueOf(id)});
     }
 
     public void deleteOneRowAdd(int row_id, String nameTable) {

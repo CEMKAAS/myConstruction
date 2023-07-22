@@ -1,5 +1,6 @@
 package com.zaroslikov.myconstruction;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -28,6 +29,7 @@ public class AddProjectFragment extends Fragment {
 
     private TextInputLayout nameProject, dateProject;
     private MaterialDatePicker datePicker;
+    static final int GALLERY_REQUEST = 1;
 
     private MyDatabaseHelper myDB;
 
@@ -45,7 +47,17 @@ public class AddProjectFragment extends Fragment {
         MaterialToolbar appBar = getActivity().findViewById(R.id.topAppBar);
         appBar.setTitle("Добавить проект");
         appBar.setNavigationIcon(R.drawable.baseline_arrow_back_24);
+        appBar.getMenu().findItem(R.id.filler).setVisible(false);
         appBar.getMenu().findItem(R.id.deleteAll).setVisible(false);
+        appBar.getMenu().findItem(R.id.moreAll).setVisible(true);
+        appBar.setOnMenuItemClickListener(item -> {
+            int position = item.getItemId();
+            if (position == R.id.moreAll) {
+                replaceFragment(new InFragment());
+                appBar.setTitle("Информация");
+            }
+            return true;
+        });
 
         appBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,10 +65,17 @@ public class AddProjectFragment extends Fragment {
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
+
+
+
         nameProject = layout.findViewById(R.id.name_project);
         dateProject = layout.findViewById(R.id.date);
 
         // Настройка календаря
+
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        dateProject.getEditText().setText(calendar.get(Calendar.DAY_OF_MONTH)+ "." +(calendar.get(Calendar.MONTH) + 1) + "." + calendar.get(Calendar.YEAR));
+
         CalendarConstraints constraintsBuilder = new CalendarConstraints.Builder()
                 .setValidator(DateValidatorPointBackward.now())
                 .build();
@@ -83,8 +102,6 @@ public class AddProjectFragment extends Fragment {
                 });
             }
         });
-
-
         Button add = layout.findViewById(R.id.begin);
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,12 +134,7 @@ public class AddProjectFragment extends Fragment {
             myDB.insertToDbProject(name, date, 0);
             replaceFragment(new MenuProjectFragment());
         }
-
-
-
-
     }
-
 
     private void replaceFragment(Fragment fragment) {
         getActivity().getSupportFragmentManager().beginTransaction()

@@ -23,19 +23,22 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public class AdapterProject  extends RecyclerView.Adapter<AdapterProject.ViewHolder> {
+public class AdapterProject extends RecyclerView.Adapter<AdapterProject.ViewHolder> {
     private ArrayList id, name, data;
     private long diff;
     private Listener listener;
+    private String textCard;
+    private Boolean fragment = false;
 
     public static interface Listener {
         public void onClick(int position, String name, String data, int id);
     }
 
-    public AdapterProject(ArrayList idIncubator, ArrayList nameIncubator, ArrayList dataIncubator) {
+    public AdapterProject(ArrayList idIncubator, ArrayList nameIncubator, ArrayList dataIncubator, Boolean fragment) {
         this.id = idIncubator;
         this.name = nameIncubator;
         this.data = dataIncubator;
+        this.fragment = fragment;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -68,7 +71,7 @@ public class AdapterProject  extends RecyclerView.Adapter<AdapterProject.ViewHol
         ImageView imageView = (ImageView) cardView.findViewById(R.id.info_image);
 
         //Установка картинки в карту
-        Drawable drawable = null;
+        Drawable drawable = cardView.getResources().getDrawable(R.drawable.baseline_home_work_24);;
 //        if ("Курицы".equals(type.get(position))) {
 //            drawable = cardView.getResources().getDrawable(R.drawable.chicken);
 //        } else if ("Гуси".equals(type.get(position))) {
@@ -84,25 +87,42 @@ public class AdapterProject  extends RecyclerView.Adapter<AdapterProject.ViewHol
         imageView.setImageDrawable(drawable);
         imageView.setContentDescription("22");
 
+        if (fragment) {
+            Calendar calendar = Calendar.getInstance();
+            String dateBefore22 = String.valueOf(data.get(position));
+            String dateBefore222 = calendar.get(Calendar.DAY_OF_MONTH) + 1 + "." + (calendar.get(Calendar.MONTH) + 1) + "." + calendar.get(Calendar.YEAR);
 
-        Calendar calendar = Calendar.getInstance();
-        String dateBefore22 = String.valueOf(data.get(position));
-        String dateBefore222 = calendar.get(Calendar.DAY_OF_MONTH) + 1 + "." + (calendar.get(Calendar.MONTH) + 1) + "." + calendar.get(Calendar.YEAR);
+            SimpleDateFormat myFormat = new SimpleDateFormat("dd.MM.yyyy");
 
-        SimpleDateFormat myFormat = new SimpleDateFormat("dd.MM.yyyy");
+            try {
+                Date date1 = myFormat.parse(dateBefore22);
+                Date date2 = myFormat.parse(dateBefore222);
+                diff = date2.getTime() - date1.getTime();
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+            textCard = "Идет " + String.valueOf(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)) + " день ";
+        } else {
 
-        try {
-            Date date1 = myFormat.parse(dateBefore22);
-            Date date2 = myFormat.parse(dateBefore222);
-            diff = date2.getTime() - date1.getTime();
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
+            String date[] = String.valueOf(data.get(position)).split(" - ");
+            String dateBegin = date[0];
+            String dateEnd = date[1];
+
+            SimpleDateFormat myFormat = new SimpleDateFormat("dd.MM.yyyy");
+
+            try {
+                Date date1 = myFormat.parse(dateBegin);
+                Date date2 = myFormat.parse(dateEnd);
+                diff = date2.getTime() - date1.getTime();
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+            textCard = "Закончилось за " + String.valueOf(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)) + " день ";
         }
-
         TextView textView = (TextView) cardView.findViewById(R.id.name);
         textView.setText(String.valueOf(name.get(position)));// имя проекта
         TextView textView1 = (TextView) cardView.findViewById(R.id.dayEnd);
-        textView1.setText("Идет " + String.valueOf(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)) + " день ");//Какой день
+        textView1.setText(textCard);//Какой день
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_gravity="center">
-
         <TextView
             android:id="@+id/now_warehouse"
             style="@style/TextAppearance.MyApp.DisplaySmall3"
@@ -21,6 +20,17 @@
             android:layout_gravity="center"
             android:layout_marginBottom="20dp"
             android:text="" />
+
+        <TextView
+            android:id="@+id/now_unit"
+            style="@style/TextAppearance.MyApp.DisplaySmall2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:text="" />
+
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/product_name_add_menu"
@@ -154,7 +164,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_gravity="center">
+        android:gravity="center_horizontal">
         <Button
             android:id="@+id/update_button"
             android:layout_marginTop="10dp"
@@ -162,9 +172,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Обновить"
-            android:layout_marginLeft="70dp"
-            android:layout_marginRight="5dp"
-
             app:icon="@drawable/baseline_add_24" />
 
         <Button

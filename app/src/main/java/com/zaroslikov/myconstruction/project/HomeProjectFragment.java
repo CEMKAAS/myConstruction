@@ -39,9 +39,7 @@ public class HomeProjectFragment extends Fragment {
                 onClickButton(new AddProjectFragment());
             }
         });
-
-
-        fab.show();
+        fab.setVisibility(View.VISIBLE);
         fab.setText("Добавить");
         fab.setIconResource(R.drawable.baseline_add_24);
         fab.getIcon();
@@ -56,7 +54,7 @@ public class HomeProjectFragment extends Fragment {
 
         storeDataInArrays();
 
-        AdapterProject adapterProject = new AdapterProject(id, name, data);
+        AdapterProject adapterProject = new AdapterProject(id, name, data,true);
         recyclerView.setAdapter(adapterProject);
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         recyclerView.setLayoutManager(layoutManager);

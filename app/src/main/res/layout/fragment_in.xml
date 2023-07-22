@@ -42,5 +42,5 @@
         android:linksClickable="true"
         android:layout_gravity="center"
         android:textSize="21dp"
-        android:text="https://vk.com/myfermaapp" />
+        android:text="https://vk.com/myconstructionapp" />
 </GridLayout>

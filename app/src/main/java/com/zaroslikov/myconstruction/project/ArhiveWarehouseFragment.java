@@ -1,5 +1,6 @@
 package com.zaroslikov.myconstruction.project;
 
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -23,6 +24,7 @@ import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointBackward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.zaroslikov.myconstruction.CustomAdapterMagazine;
@@ -148,9 +150,27 @@ public class ArhiveWarehouseFragment extends Fragment {
         returnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
+                builder.setTitle("Вернуть проект?");
+                builder.setMessage("Возможно вы еще не доконца закончили проект." +
+                        " Его можно будет вернуть потом обратно в архив!");
 
-                myDB.updateToDbProject(idProject, 0, "");
-                replaceFragment(new MenuProjectFragment());
+                builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        myDB.updateToDbProject(idProject, 0, "");
+                        replaceFragment(new MenuProjectFragment());
+                    }
+                });
+                builder.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                builder.show();
+
             }
         });
 
@@ -158,8 +178,26 @@ public class ArhiveWarehouseFragment extends Fragment {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myDB.deleteOneRowAdd(idProject, MyConstanta.TABLE_NAME);
-                replaceFragment(new MenuProjectFragment());
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
+                builder.setTitle("Удалить проект?");
+                builder.setMessage("Ваш проект удалиться со всеми данными, вы уверенны? ");
+
+                builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        myDB.deleteOneRowAdd(idProject, MyConstanta.TABLE_NAME);
+                        replaceFragment(new MenuProjectFragment());
+                    }
+                });
+                builder.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                builder.show();
+
             }
         });
 

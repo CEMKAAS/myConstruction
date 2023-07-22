@@ -79,6 +79,7 @@ public class MagazineManagerFragment extends Fragment {
         MaterialToolbar appBar = getActivity().findViewById(R.id.topAppBar);
         appBar.getMenu().findItem(R.id.filler).setVisible(true);
         appBar.setNavigationIcon(R.drawable.baseline_arrow_back_24);
+        appBar.getMenu().findItem(R.id.moreAll).setVisible(true);
         appBar.setOnMenuItemClickListener(item -> {
             int position = item.getItemId();
             if (position == R.id.filler) {

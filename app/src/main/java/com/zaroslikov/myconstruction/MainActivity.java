@@ -1,27 +1,48 @@
 package com.zaroslikov.myconstruction;
 
+import static android.content.ContentValues.TAG;
+
+import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import com.google.android.material.appbar.MaterialToolbar;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.yandex.mobile.ads.banner.AdSize;
+import com.yandex.mobile.ads.banner.BannerAdView;
+import com.yandex.mobile.ads.common.AdRequest;
+import com.yandex.mobile.ads.common.AdRequestError;
+import com.yandex.mobile.ads.common.ImpressionData;
+import com.yandex.mobile.ads.interstitial.InterstitialAd;
+import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener;
 import com.zaroslikov.myconstruction.databinding.ActivityMainBinding;
 import com.zaroslikov.myconstruction.db.MyDatabaseHelper;
 import com.zaroslikov.myconstruction.project.MenuProjectFragment;
+
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private MyDatabaseHelper myDB;
     private ExtendedFloatingActionButton fab;
+    private BannerAdView mBannerAdView;//Реклама от Яндекса
+    private InterstitialAd mInterstitialAd;
     private MaterialToolbar appBar;
     private int position = 0;
 
@@ -34,7 +55,9 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         myDB = new MyDatabaseHelper(this);
+        if (savedInstanceState == null) {  //при повороте приложение не брасывается
 
+        }
         fab = findViewById(R.id.extended_fab);
         fab.setVisibility(View.GONE);
 
@@ -75,37 +98,32 @@ public class MainActivity extends AppCompatActivity {
                 replaceFragment(new FinanceFragment());
             }
 
-//                case R.id.finance_button:
-//                    replaceFragment(new FinanceFragment());
-//                    appBar.setTitle("Мои Финансы");
-//                    fab.show();
-//                    fab.setText("Цена");
-//                    fab.setIconResource(R.drawable.ic_action_price);
-//                    fab.getIcon();
-//
-//                    fab.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            replaceFragment(new PriceFragment());
-//                            appBar.setTitle("Моя Цена");
-//                            fab.hide();
-//                            fab.setVisibility(View.GONE);
-//                        }
-//                    });
-//                    break;
-
-//                case R.id.sale_button:
-//                    replaceFragment(new SaleFragment());
-//                    fba(new AddManagerFragment());
-//                    break;
-//
-//                case R.id.expenses_button:
-//                    replaceFragment(new ExpensesFragment());
-//                    fba(new AddManagerFragment());
-//                    break;
-
             return true;
         });
+
+
+//        убираем ботом навигацию и фабкнопку при вызове клавиатуры
+        KeyboardVisibilityEvent.setEventListener(
+                this,
+                new KeyboardVisibilityEventListener() {
+                    @Override
+                    public void onVisibilityChanged(boolean isOpen) {
+                        Log.d(TAG, "onVisibilityChanged: Keyboard visibility changed");
+                        if (isOpen) {
+                            Log.d(TAG, "onVisibilityChanged: Keyboard is open");
+                            binding.navView.setVisibility(View.GONE);
+//                            fab.setVisibility(View.INVISIBLE);
+                            Log.d(TAG, "onVisibilityChanged: NavBar got Invisible");
+                        } else {
+                            Log.d(TAG, "onVisibilityChanged: Keyboard is closed");
+                            binding.navView.setVisibility(View.VISIBLE);
+//                            fab.setVisibility(View.VISIBLE);
+                            Log.d(TAG, "onVisibilityChanged: NavBar got Visible");
+                        }
+                    }
+                });
+
+
 
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             public void onBackStackChanged() {
@@ -134,6 +152,59 @@ public class MainActivity extends AppCompatActivity {
         }
         );
 
+        //Реклама от яндекса
+
+        mBannerAdView = (BannerAdView) findViewById(R.id.banner_ad_view);
+        mBannerAdView.setAdUnitId("R-M-2536883-1"); //Вставляется свой айди от яндекса
+        mBannerAdView.setAdSize(AdSize.stickySize(320));//Размер банера
+        final AdRequest adRequest = new AdRequest.Builder().build();
+        mBannerAdView.loadAd(adRequest);
+        //рекламав
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("R-M-2536883-2");
+
+        mInterstitialAd.loadAd(adRequest);
+        mInterstitialAd.setInterstitialAdEventListener(new InterstitialAdEventListener() {
+            @Override
+            public void onAdLoaded() {
+                mInterstitialAd.show();
+            }
+
+            @Override
+            public void onAdFailedToLoad(@NonNull AdRequestError adRequestError) {
+
+            }
+
+            @Override
+            public void onAdShown() {
+
+            }
+
+            @Override
+            public void onAdDismissed() {
+
+            }
+
+            @Override
+            public void onAdClicked() {
+
+            }
+
+            @Override
+            public void onLeftApplication() {
+
+            }
+
+            @Override
+            public void onReturnedToApplication() {
+
+            }
+
+            @Override
+            public void onImpression(@Nullable ImpressionData impressionData) {
+
+            }
+        });
 
 //        BottomNavigationView navView = findViewById(R.id.nav_view);
 //        // Passing each menu ID as a set of Ids because each
@@ -169,6 +240,31 @@ public class MainActivity extends AppCompatActivity {
                 .addToBackStack(null)
                 .commit();
     }
+
+
+    //Сворачивание клавиатуры при нажатие на любую часть экрана
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        View v = getCurrentFocus();
+        boolean ret = super.dispatchTouchEvent(event);
+        if (v instanceof EditText) {
+            View w = getCurrentFocus();
+            int scrcoords[] = new int[2];
+            w.getLocationOnScreen(scrcoords);
+            float x = event.getRawX() + w.getLeft() - scrcoords[0];
+            float y = event.getRawY() + w.getTop() - scrcoords[1];
+
+            Log.d("Activity", "Touch event " + event.getRawX() + "," + event.getRawY() + " " + x + "," + y + " rect " + w.getLeft() + "," + w.getTop() + "," + w.getRight() + "," + w.getBottom() + " coords " + scrcoords[0] + "," + scrcoords[1]);
+            if (event.getAction() == MotionEvent.ACTION_UP && (x < w.getLeft() || x >= w.getRight() || y < w.getTop() || y > w.getBottom())) {
+
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
+            }
+        }
+        return ret;
+    }
+
+
 
     public void beginIncubator() {
 

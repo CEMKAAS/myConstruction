@@ -6,7 +6,8 @@ android:id="@+id/mainLayout"
 android:layout_width="match_parent"
 android:layout_height="wrap_content"
 android:orientation="vertical"
-android:stretchColumns="1,2,3,4">
+android:stretchColumns="1,2,3,4"
+    android:background="#0060A7">
 
 <TableRow>
 
@@ -17,8 +18,12 @@ android:stretchColumns="1,2,3,4">
         android:gravity="left"
         android:id="@+id/products_text"
         style="@style/TextAppearance.MyApp.DisplaySmall2"
-        android:layout_marginLeft="10dp"
 android:text="sd"
+        android:layout_marginRight="0.5dp"
+        android:layout_marginLeft="1dp"
+        android:layout_marginBottom="1dp"
+        android:layout_marginTop="0.5dp"
+        android:background="#FFFBFF"
         />
 
     <TextView
@@ -29,6 +34,11 @@ android:text="sd"
         android:id="@+id/count_text"
         style="@style/TextAppearance.MyApp.DisplaySmall2"
         android:text="sd"
+        android:layout_marginRight="0.5dp"
+        android:layout_marginLeft="0.5dp"
+        android:layout_marginBottom="1dp"
+        android:layout_marginTop="0.5dp"
+        android:background="#FFFBFF"
         />
     <TextView
         android:layout_height="match_parent"
@@ -38,18 +48,27 @@ android:text="sd"
         style="@style/TextAppearance.MyApp.DisplaySmall2"
         android:layout_column="3"
         android:text="sd"
+        android:layout_marginRight="0.5dp"
+        android:layout_marginLeft="0.5dp"
+        android:layout_marginBottom="1dp"
+        android:layout_marginTop="0.5dp"
+        android:background="#FFFBFF"
 
         />
 
     <TextView
         android:layout_height="match_parent"
-        android:layout_width="match_parent"
+        android:layout_width="30dp"
         android:gravity="left"
         android:id="@+id/price_txt"
         style="@style/TextAppearance.MyApp.DisplaySmall2"
         android:layout_column="4"
         android:text="sd"
-
+        android:layout_marginRight="1dp"
+        android:layout_marginLeft="0.5dp"
+        android:layout_marginBottom="1dp"
+        android:layout_marginTop="0.5dp"
+        android:background="#FFFBFF"
         />
 
 </TableRow>

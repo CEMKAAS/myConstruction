@@ -66,13 +66,30 @@ public class WriteOffFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickButton(new MagazineManagerFragment());
+                replaceFragment(new MagazineManagerFragment());
             }
         });
 
 
         MaterialToolbar appBar = getActivity().findViewById(R.id.topAppBar);
         appBar.setTitle("Мои Списания");
+        appBar.getMenu().findItem(R.id.filler).setVisible(false);
+        appBar.getMenu().findItem(R.id.moreAll).setVisible(true);
+        appBar.setOnMenuItemClickListener(item -> {
+            int position = item.getItemId();
+            if (position == R.id.moreAll) {
+                replaceFragment(new InFragment());
+                appBar.setTitle("Информация");
+            }
+            return true;
+        });
+
+        appBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
 
         productName = layout.findViewById(R.id.productName_editText);
         add_edit = layout.findViewById(R.id.add_edit);
@@ -123,14 +140,23 @@ public class WriteOffFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String productClick = productNameList.get(position);
-                addDB(productClick, 0, suffixSpiner.getText().toString());
 
                 Cursor cursorProduct = myDB.seachProduct(productClick);
+                suffixList.clear();
                 while (cursorProduct.moveToNext()) {
                     suffixList.add(cursorProduct.getString(2));
                 }
                 cursorProduct.close();
                 setArrayAdapter();
+                addDB(productClick, 0, suffixList.get(0));
+            }
+        });
+
+        suffixSpiner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String productClick = productName.getText().toString();
+                addDB(productClick, 0, suffixSpiner.getText().toString());
             }
         });
 
@@ -284,7 +310,11 @@ public class WriteOffFragment extends Fragment {
             add_edit.getError();
             return false;
         } else {
-            nowUnit.setText(" На складе " + productName + " " + nowUnitProduct + " " + suffix);
+            if (productName == null || suffixName == null){
+                nowUnit.setText(" На складе  нет такого товара ");
+            }else {
+                nowUnit.setText(" На складе " + productName + " " + nowUnitProduct + " " + suffixName);}
+
             return true;
         }
 
@@ -305,11 +335,10 @@ public class WriteOffFragment extends Fragment {
         suffixSpiner.setAdapter(arrayAdapterSuffix);
     }
 
-    public void onClickButton(Fragment fragment) {
+    private void replaceFragment(Fragment fragment) {
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.conteiner, fragment, "visible_fragment")
                 .addToBackStack(null)
                 .commit();
     }
-
 }

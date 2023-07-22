@@ -46,7 +46,7 @@ public class UpdateProductFragment extends Fragment {
     private int idProject;
     private String nameMagazine;
 
-    private TextView nowUnit;
+    private TextView nowUnit, nowWarehouse;
 
     private Product productUpDate;
 
@@ -78,13 +78,31 @@ public class UpdateProductFragment extends Fragment {
         category = layout.findViewById(R.id.category_edit);
         date = layout.findViewById(R.id.date);
         nowUnit = layout.findViewById(R.id.now_warehouse);
+        nowWarehouse = layout.findViewById(R.id.now_unit);
         //Подключаем Фронт для спинеров
         productNameMenu = layout.findViewById(R.id.product_name_add_menu);
         suffixMenu = layout.findViewById(R.id.suffix_add_menu);
         categoryMenu = layout.findViewById(R.id.category_add_menu);
         //Настройка верхней строки
         MaterialToolbar appBar = getActivity().findViewById(R.id.topAppBar);
-        //TODO Back и кнопка удаления на суффиксе
+        appBar.getMenu().findItem(R.id.filler).setVisible(false);
+        appBar.getMenu().findItem(R.id.moreAll).setVisible(true);
+        appBar.setOnMenuItemClickListener(item -> {
+            int position = item.getItemId();
+            if (position == R.id.moreAll) {
+                replaceFragment(new InFragment());
+                appBar.setTitle("Информация");
+            }
+            return true;
+        });
+
+        appBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
+
 
         // Настройка календаря
         CalendarConstraints constraintsBuilder = new CalendarConstraints.Builder()
@@ -117,21 +135,26 @@ public class UpdateProductFragment extends Fragment {
         //Назначае каждой строке
         productName.setText(productUpDate.getName());
         add_edit.getEditText().setText(String.valueOf(productUpDate.getCount()));
-        suffixMenu.getEditText().setText(productUpDate.getSuffix());
+        suffixSpiner.setText(productUpDate.getSuffix(),false);
         price_edit.getEditText().setText(String.valueOf(productUpDate.getPrice()));
         category.setText(productUpDate.getCategory());
         date.getEditText().setText(productUpDate.getDate());
+
+
         //Все зависит от раздела
         if (nameMagazine.equals("Мои Покупки")) {
             price_edit.setVisibility(View.VISIBLE);
             nowUnit.setVisibility(View.GONE);
         } else if (nameMagazine.equals("Мои Списания")) {
             //суффикс, цену и ввод имени убираем
-            nowUnit.setText(productUpDate.getName() + " c ед. изм. " + productUpDate.getSuffix());
+            nowUnit.setText(productUpDate.getName().toUpperCase() + " c ед. изм. " + productUpDate.getSuffix().toUpperCase());
             suffixMenu.setVisibility(View.GONE);
             productNameMenu.setVisibility(View.GONE);
             price_edit.setVisibility(View.GONE);
         }
+
+        addDB(productUpDate.getName(), productUpDate.getCount(), productUpDate.getSuffix());
+
 
         //Берем из бд товары и добавляем в список
         addProduct();
@@ -277,10 +300,10 @@ public class UpdateProductFragment extends Fragment {
                 cursorProduct.close();
 
                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
-                builder.setTitle("Товара " + name + " c ед.изм " + suffix + " нет!");
-                builder.setMessage("Вы хотите ИЗМЕНИТЬ ВСЕ записи с " + productUpDate.getName() + " c ед.изм " + productUpDate.getSuffix()
-                        + " на " + name + " c ед.изм " + suffix +
-                        "\nИли  ДОБАВИТЬ новый товар " + name + " c ед.изм " + suffix + " с данными значениями?");
+                builder.setTitle("Товара " + name.toUpperCase() + " c ед.изм " + suffix.toUpperCase() + " нет!");
+                builder.setMessage("Вы хотите ИЗМЕНИТЬ ВСЕ записи с " + productUpDate.getName().toUpperCase() + " c ед.изм " + productUpDate.getSuffix().toUpperCase()
+                        + " на " + name.toUpperCase() + " c ед.изм " + suffix.toUpperCase()  +
+                        "\nИли  ДОБАВИТЬ c ЗАМЕНОЙ на новый товар " + name.toUpperCase()  + " c ед.изм " + suffix.toUpperCase()  + " с данными значениями?");
 
                 builder.setPositiveButton("Добавить", new DialogInterface.OnClickListener() {
                     @Override
@@ -399,23 +422,37 @@ public class UpdateProductFragment extends Fragment {
 
         double diff = productUpDate.getCount() - count;
         double nowUnitProduct = 0;
+        double wareHouseUnitProduct = productUnitAdd - productUnitWriteOff;
 
         if (nameMagazine.equals("Мои Покупки")) {
             nowUnitProduct = (productUnitAdd - diff) - productUnitWriteOff;
+
+            if (nowUnitProduct < 0) {
+
+                add_edit.setError("Столько товара нет на складе!\nу Вас списано " + productUnitWriteOff);
+                add_edit.getError();
+
+                return false;
+            }
+
         } else if (nameMagazine.equals("Мои Списания")) {
             nowUnitProduct = productUnitAdd  - (productUnitWriteOff- diff);
 
+            if (nowUnitProduct < 0) {
+
+                add_edit.setError("Столько товара нет на складе!\nу Вас добавленно " + productUnitAdd);
+                add_edit.getError();
+
+                return false;
+            }
         }
 
-        double wareHouseUnitProduct = productUnitAdd - productUnitWriteOff;
 
-        if (nowUnitProduct < 0) {
 
-            add_edit.setError("Столько товара нет на складе!\nВы можете списать только " + wareHouseUnitProduct);
-            add_edit.getError();
 
-            return false;
-        }
+
+            nowWarehouse.setText("Cейчас на складе " + wareHouseUnitProduct + " "  + name);
+
         return true;
     }
 

@@ -1,5 +1,6 @@
 package com.zaroslikov.myconstruction.project;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,9 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.zaroslikov.myconstruction.AddProjectFragment;
+import com.zaroslikov.myconstruction.InFragment;
 import com.zaroslikov.myconstruction.R;
+import com.zaroslikov.myconstruction.WarehouseFragment;
 import com.zaroslikov.myconstruction.databinding.ActivityMainBinding;
 import com.zaroslikov.myconstruction.db.MyDatabaseHelper;
 
@@ -39,7 +44,19 @@ public class MenuProjectFragment extends Fragment {
         appBar.setTitle("Мои Проекты");
         appBar.getMenu().findItem(R.id.deleteAll).setVisible(true);
         appBar.getMenu().findItem(R.id.filler).setVisible(false);
+        appBar.getMenu().findItem(R.id.moreAll).setVisible(true);
         appBar.setNavigationIcon(null);
+        appBar.setOnMenuItemClickListener(item -> {
+            int position = item.getItemId();
+            if (position == R.id.moreAll) {
+                replaceFragment(new InFragment());
+                appBar.setTitle("Информация");
+            } else if (position == R.id.deleteAll) {
+                deleteAllData();
+            }
+            return true;
+        });
+
 
         TabLayout tabLayout = layout.findViewById(R.id.tab);
         ViewPager2 viewPager2 = layout.findViewById(R.id.view_pager);
@@ -74,4 +91,36 @@ public class MenuProjectFragment extends Fragment {
 
         return layout;
     }
+
+    public void replaceFragment(Fragment fragment) {
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.conteiner, fragment, "visible_fragment")
+                .addToBackStack(null)
+                .commit();
+    }
+
+
+    public void deleteAllData() {
+
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity());
+        builder.setTitle("Удаляем ВСЕ ?");
+        builder.setMessage("Вы уверены, что хотите удалить все проекты, включая архивные?");
+        builder.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //
+                myDB.deleteAllData();
+                replaceFragment(new AddProjectFragment());
+            }
+        });
+        builder.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.create().show();
+    }
+
+
 }

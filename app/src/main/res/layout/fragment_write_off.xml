@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_gravity="center">
+        android:layout_gravity="center|top">
 
         <TextView
             android:id="@+id/now_warehouse"
@@ -19,7 +19,8 @@
             android:layout_height="wrap_content"
             android:textSize="18dp"
             android:fontFamily="@font/commissioner_regular"
-            android:layout_marginBottom="40dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="15dp"
             android:layout_marginLeft="5dp"
             android:text="" />
 
