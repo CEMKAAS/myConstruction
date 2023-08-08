@@ -47,6 +47,9 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
     public void deleteAllData() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM " + MyConstanta.TABLE_NAME);
+        db.execSQL("DELETE FROM " + MyConstanta.TABLE_NAME_PROJECT_PRODUCT);
+        db.execSQL("DELETE FROM " + MyConstanta.TABLE_NAME_ADD);
+        db.execSQL("DELETE FROM " + MyConstanta.TABLE_NAME_WRITEOFF);
     }
 
     public boolean deleteDatabase(Context context) {

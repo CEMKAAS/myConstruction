@@ -156,14 +156,17 @@ public class AddFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String productClick = productName.getText().toString();
-                String suffixClick = productList.get(position).getSuffix();
 
-                if (suffixSpiner.getText().toString().equals("")){
-                    addDB(productClick, suffixClick);
-                    suffixSpiner.setText(suffixClick, false);
-                }else {
-                    addDB(productClick, suffixSpiner.getText().toString());
-                }
+                addDB(productClick, suffixSpiner.getText().toString());
+
+//                String suffixClick = productList.get(position).getSuffix();
+
+//                if (suffixSpiner.getText().toString().equals("")){
+//                    addDB(productClick, suffixClick);
+//                    suffixSpiner.setText(suffixClick, false);
+//                }else {
+
+//                }
             }
         });
 

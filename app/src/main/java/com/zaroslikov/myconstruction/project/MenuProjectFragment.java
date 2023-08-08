@@ -34,7 +34,7 @@ public class MenuProjectFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View layout = inflater.inflate(R.layout.fragment_menu_project, container, false);
-
+        myDB = new MyDatabaseHelper(getActivity());
         //убириаем фаб кнопку
         ExtendedFloatingActionButton fab = (ExtendedFloatingActionButton) getActivity().findViewById(R.id.extended_fab);
         fab.setVisibility(View.VISIBLE);

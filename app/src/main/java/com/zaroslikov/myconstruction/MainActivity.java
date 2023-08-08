@@ -155,7 +155,8 @@ public class MainActivity extends AppCompatActivity {
         //Реклама от яндекса
 
         mBannerAdView = (BannerAdView) findViewById(R.id.banner_ad_view);
-        mBannerAdView.setAdUnitId("R-M-2536883-1"); //Вставляется свой айди от яндекса
+
+        mBannerAdView.setAdUnitId("R-M-2536883-3"); //Вставляется свой айди от яндекса
         mBannerAdView.setAdSize(AdSize.stickySize(320));//Размер банера
         final AdRequest adRequest = new AdRequest.Builder().build();
         mBannerAdView.loadAd(adRequest);
