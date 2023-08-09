@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -189,15 +190,15 @@ public class WarehouseFragment extends Fragment {
         TableLayout tableLayout = (TableLayout) layout.findViewById(R.id.tableLayout);
         int rowI = 0;
         for (Product product : productList) {
-//            LinearLayout container = (LinearLayout) layout.findViewById(R.id.mlayout);
             TableRow tableRow = new TableRow(getActivity());
             tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
                     TableRow.LayoutParams.WRAP_CONTENT));
-            for (int i = 0; i < 2; i++) {
+            tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+            for (int i = 0; i <= 2; i++) {
                 til = new TextView(getActivity());
                 switch (i) {
                     case 0:
-                        til.setText(product.getName());
+                        til.setText(product.getName()+ "  ");
                         tableRow.addView(til, i);
                         break;
                     case 1:
@@ -205,7 +206,7 @@ public class WarehouseFragment extends Fragment {
                         tableRow.addView(til, i);
                         break;
                     case 2:
-                        til.setText(product.getSuffix());
+                        til.setText("  "+ product.getSuffix());
                         tableRow.addView(til, i);
                         break;
                 }
