@@ -58,29 +58,19 @@ public class WriteOffFragment extends Fragment {
         MainActivity mainActivity = new MainActivity();
         idProject = mainActivity.getProjectNumer();
 
-        ExtendedFloatingActionButton fab = (ExtendedFloatingActionButton) getActivity().findViewById(R.id.extended_fab);
-        fab.show();
-        fab.setText("Журнал");
-        fab.setIconResource(R.drawable.baseline_book_24);
-        fab.getIcon();
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                replaceFragment(new MagazineManagerFragment());
-            }
-        });
-
-
         MaterialToolbar appBar = getActivity().findViewById(R.id.topAppBar);
         appBar.setTitle("Мои Списания");
         appBar.getMenu().findItem(R.id.filler).setVisible(false);
         appBar.getMenu().findItem(R.id.moreAll).setVisible(true);
+        appBar.getMenu().findItem(R.id.magazine).setVisible(true);
         appBar.setOnMenuItemClickListener(item -> {
             int position = item.getItemId();
             if (position == R.id.moreAll) {
                 replaceFragment(new InFragment());
                 appBar.setTitle("Информация");
-            }
+            } else if (position==R.id.magazine) {
+            replaceFragment(new MagazineManagerFragment());
+        }
             return true;
         });
 
@@ -243,7 +233,7 @@ public class WriteOffFragment extends Fragment {
             //Достаем из андройда
             String name = productName.getText().toString();
             String suffix = suffixSpiner.getText().toString();
-            double count = Double.parseDouble(add_edit.getEditText().getText().toString());
+            double count = Double.parseDouble(add_edit.getEditText().getText().toString().replaceAll(",", ".").replaceAll("[^\\d.]", ""));
             String categoryProduct = category.getText().toString();
             String dateProduct = date.getEditText().getText().toString();
 

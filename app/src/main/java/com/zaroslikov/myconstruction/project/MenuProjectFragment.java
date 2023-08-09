@@ -43,6 +43,7 @@ public class MenuProjectFragment extends Fragment {
         MaterialToolbar appBar = getActivity().findViewById(R.id.topAppBar);
         appBar.setTitle("Мои Проекты");
         appBar.getMenu().findItem(R.id.deleteAll).setVisible(true);
+        appBar.getMenu().findItem(R.id.magazine).setVisible(false);
         appBar.getMenu().findItem(R.id.filler).setVisible(false);
         appBar.getMenu().findItem(R.id.moreAll).setVisible(true);
         appBar.setNavigationIcon(null);

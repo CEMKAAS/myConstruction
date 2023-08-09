@@ -72,12 +72,10 @@ public class MagazineManagerFragment extends Fragment {
         categoryList = new ArrayList<>();
         productNameList = new ArrayList<>();
 
-        //убириаем фаб кнопку
-        ExtendedFloatingActionButton fab = (ExtendedFloatingActionButton) getActivity().findViewById(R.id.extended_fab);
-        fab.setVisibility(View.GONE);
         //Настройка АппБара
         MaterialToolbar appBar = getActivity().findViewById(R.id.topAppBar);
         appBar.getMenu().findItem(R.id.filler).setVisible(true);
+        appBar.getMenu().findItem(R.id.magazine).setVisible(false);
         appBar.setNavigationIcon(R.drawable.baseline_arrow_back_24);
         appBar.getMenu().findItem(R.id.moreAll).setVisible(true);
         appBar.setOnMenuItemClickListener(item -> {

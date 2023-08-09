@@ -63,6 +63,7 @@ public class FinanceFragment extends Fragment {
         MaterialToolbar appBar = getActivity().findViewById(R.id.topAppBar);
         appBar.setTitle("Мой Финансы");
         appBar.setNavigationIcon(R.drawable.baseline_arrow_back_24);
+        appBar.getMenu().findItem(R.id.magazine).setVisible(false);
         appBar.getMenu().findItem(R.id.deleteAll).setVisible(false);
         appBar.getMenu().findItem(R.id.filler).setVisible(true);
         appBar.getMenu().findItem(R.id.moreAll).setVisible(true);

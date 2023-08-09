@@ -86,6 +86,7 @@ public class UpdateProductFragment extends Fragment {
         //Настройка верхней строки
         MaterialToolbar appBar = getActivity().findViewById(R.id.topAppBar);
         appBar.getMenu().findItem(R.id.filler).setVisible(false);
+        appBar.getMenu().findItem(R.id.magazine).setVisible(false);
         appBar.getMenu().findItem(R.id.moreAll).setVisible(true);
         appBar.setOnMenuItemClickListener(item -> {
             int position = item.getItemId();
@@ -282,11 +283,11 @@ public class UpdateProductFragment extends Fragment {
 
         } else {
             //Достаем из Фронта все данные
-            String name = productName.getText().toString();
+            String name = productName.getText().toString().substring(0,1).toUpperCase() + productName.getText().toString().substring(1);;
             String suffix = suffixSpiner.getText().toString();
-            double price = Double.parseDouble(price_edit.getEditText().getText().toString());
-            double count = Double.parseDouble(add_edit.getEditText().getText().toString());
-            String categoryProduct = category.getText().toString();
+            double price = Double.parseDouble(price_edit.getEditText().getText().toString().replaceAll(",", ".").replaceAll("[^\\d.]", ""));
+            double count = Double.parseDouble(add_edit.getEditText().getText().toString().replaceAll(",", ".").replaceAll("[^\\d.]", ""));
+            String categoryProduct = category.getText().toString().substring(0,1).toUpperCase() + category.getText().toString().substring(1);;
             String dateProduct = date.getEditText().getText().toString();
             //Константы
             int[] idProduct = {0};
@@ -373,8 +374,8 @@ public class UpdateProductFragment extends Fragment {
 
         } else {
             //Достаем из андройда имяПродукта и суффикс
-            double count = Double.parseDouble(add_edit.getEditText().getText().toString());
-            String categoryProduct = category.getText().toString();
+            double count = Double.parseDouble(add_edit.getEditText().getText().toString().replaceAll(",", ".").replaceAll("[^\\d.]", ""));
+            String categoryProduct = category.getText().toString().substring(0,1).toUpperCase() + category.getText().toString().substring(1);;
             String dateProduct = date.getEditText().getText().toString();
 
             final int[] idProduct = {0};
@@ -446,10 +447,6 @@ public class UpdateProductFragment extends Fragment {
                 return false;
             }
         }
-
-
-
-
 
             nowWarehouse.setText("Cейчас на складе " + wareHouseUnitProduct + " "  + name);
 

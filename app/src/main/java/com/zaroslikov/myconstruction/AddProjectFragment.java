@@ -50,6 +50,7 @@ public class AddProjectFragment extends Fragment {
         appBar.getMenu().findItem(R.id.filler).setVisible(false);
         appBar.getMenu().findItem(R.id.deleteAll).setVisible(false);
         appBar.getMenu().findItem(R.id.moreAll).setVisible(true);
+        appBar.getMenu().findItem(R.id.magazine).setVisible(false);
         appBar.setOnMenuItemClickListener(item -> {
             int position = item.getItemId();
             if (position == R.id.moreAll) {

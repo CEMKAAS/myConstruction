@@ -4,16 +4,22 @@
 
     <item
         android:id="@+id/deleteAll"
+        android:contentDescription="Удалить"
         android:icon="@drawable/baseline_delete_24"
         android:title="Удалить"
-        android:contentDescription="Удалить"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/filler"
+        android:contentDescription="Фильтр"
         android:icon="@drawable/baseline_filter_list_24"
         android:title="Фильтр"
-        android:contentDescription="Фильтр"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/magazine"
+        android:contentDescription="Журнал"
+        android:icon="@drawable/baseline_book_24"
+        android:title="Журнал"
         app:showAsAction="ifRoom" />
 
     <item
@@ -21,7 +27,6 @@
         android:contentDescription="Информация"
         android:title="Информация"
         app:showAsAction="never" />
-
 
 
 </menu>

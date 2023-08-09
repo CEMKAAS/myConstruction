@@ -12,11 +12,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.textfield.TextInputLayout;
 import com.zaroslikov.myconstruction.db.MyConstanta;
 import com.zaroslikov.myconstruction.db.MyDatabaseHelper;
 import com.zaroslikov.myconstruction.project.MenuProjectFragment;
@@ -34,7 +39,9 @@ public class WarehouseFragment extends Fragment {
     public String dateProject;
     public int idProject;
     private RecyclerView recyclerView;
-    private List<Product> productList, productAllList;;
+    private List<Product> productList, productAllList;
+    private View layout;
+    private TextView til;
 
     private MyDatabaseHelper myDB;
 
@@ -44,7 +51,7 @@ public class WarehouseFragment extends Fragment {
         // Открываем БД
         myDB = new MyDatabaseHelper(getActivity());
 
-        View layout = inflater.inflate(R.layout.fragment_warehouse, container, false);
+        layout = inflater.inflate(R.layout.fragment_warehouse, container, false);
 
         //убириаем фаб кнопку
         ExtendedFloatingActionButton fab = (ExtendedFloatingActionButton) getActivity().findViewById(R.id.extended_fab);
@@ -54,6 +61,7 @@ public class WarehouseFragment extends Fragment {
         appBar.setTitle("Мой Склад");
         appBar.setNavigationIcon(R.drawable.baseline_arrow_back_24);
         appBar.getMenu().findItem(R.id.deleteAll).setVisible(false);
+        appBar.getMenu().findItem(R.id.magazine).setVisible(false);
         appBar.getMenu().findItem(R.id.filler).setVisible(false);
         appBar.getMenu().findItem(R.id.moreAll).setVisible(true);
         appBar.setOnMenuItemClickListener(item -> {
@@ -71,7 +79,6 @@ public class WarehouseFragment extends Fragment {
             }
         });
 
-
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             nameProject = bundle.getString("name");
@@ -80,19 +87,19 @@ public class WarehouseFragment extends Fragment {
         }
 
         MainActivity mainActivity = new MainActivity();
-       idProject = mainActivity.getProjectNumer();
+        idProject = mainActivity.getProjectNumer();
 
         //Настройка листа
         productAllList = new ArrayList();
         productList = new ArrayList();
         add();
-
+        onBackPressed();
         // Настраиваем адаптер
-        recyclerView = layout.findViewById(R.id.recyclerView);
-
-        ProductAdapter productAdapter = new ProductAdapter(productList);
-        recyclerView.setAdapter(productAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        recyclerView = layout.findViewById(R.id.recyclerView);
+//
+//        ProductAdapter productAdapter = new ProductAdapter(productList);
+//        recyclerView.setAdapter(productAdapter);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         Button add = layout.findViewById(R.id.end_button);
         add.setOnClickListener(new View.OnClickListener() {
@@ -107,8 +114,8 @@ public class WarehouseFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-                        String date = calendar.get(Calendar.DAY_OF_MONTH)+ "." +(calendar.get(Calendar.MONTH) + 1) + "." + calendar.get(Calendar.YEAR);
-                        myDB.updateToDbProject(idProject,1, date);
+                        String date = calendar.get(Calendar.DAY_OF_MONTH) + "." + (calendar.get(Calendar.MONTH) + 1) + "." + calendar.get(Calendar.YEAR);
+                        myDB.updateToDbProject(idProject, 1, date);
                         replaceFragment(new MenuProjectFragment());
                     }
                 });
@@ -129,14 +136,13 @@ public class WarehouseFragment extends Fragment {
     //Добавляем продукцию в список
 
 
-
     //Формируем список из БД
     public void add() {
 
         Cursor cursor = myDB.selectProjectAllProductAndCategoryAdd(idProject);
 
         while (cursor.moveToNext()) {
-            productAllList.add(new Product(0,cursor.getString(0),cursor.getString(1)));
+            productAllList.add(new Product(0, cursor.getString(0), cursor.getString(1)));
         }
         cursor.close();
 
@@ -176,6 +182,40 @@ public class WarehouseFragment extends Fragment {
 
         }
     }
+
+
+    // Настраиваем программно EditText
+    public void onBackPressed() {
+        TableLayout tableLayout = (TableLayout) layout.findViewById(R.id.tableLayout);
+        int rowI = 0;
+        for (Product product : productList) {
+//            LinearLayout container = (LinearLayout) layout.findViewById(R.id.mlayout);
+            TableRow tableRow = new TableRow(getActivity());
+            tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
+                    TableRow.LayoutParams.WRAP_CONTENT));
+            for (int i = 0; i < 2; i++) {
+                til = new TextView(getActivity());
+                switch (i) {
+                    case 0:
+                        til.setText(product.getName());
+                        tableRow.addView(til, i);
+                        break;
+                    case 1:
+                        til.setText(String.valueOf(product.getCount()));
+                        tableRow.addView(til, i);
+                        break;
+                    case 2:
+                        til.setText(product.getSuffix());
+                        tableRow.addView(til, i);
+                        break;
+                }
+            }
+            tableLayout.addView(tableRow, rowI);
+            rowI++;
+        }
+    }
+
+
     private void replaceFragment(Fragment fragment) {
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.conteiner, fragment, "visible_fragment")

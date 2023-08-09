@@ -74,30 +74,23 @@ public class ArhiveWarehouseFragment extends Fragment {
             dateProject = bundle.getString("date");
         }
 
+        //убириаем фаб кнопку
         ExtendedFloatingActionButton fab = (ExtendedFloatingActionButton) getActivity().findViewById(R.id.extended_fab);
-        fab.show();
-        fab.setText("Журнал");
-        fab.setIconResource(R.drawable.baseline_book_24);
-        fab.getIcon();
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                replaceFragment(new MagazineManagerFragment());
-
-            }
-        });
+        fab.setVisibility(View.GONE);
 
         MaterialToolbar appBar = getActivity().findViewById(R.id.topAppBar);
         appBar.setTitle(nameProject);
         appBar.setNavigationIcon(R.drawable.baseline_arrow_back_24);
         appBar.getMenu().findItem(R.id.deleteAll).setVisible(false);
         appBar.getMenu().findItem(R.id.filler).setVisible(false);
+        appBar.getMenu().findItem(R.id.magazine).setVisible(true);
         appBar.setOnMenuItemClickListener(item -> {
             int position = item.getItemId();
             if (position == R.id.moreAll) {
                 replaceFragment(new InFragment());
                 appBar.setTitle("Информация");
+            } else if (position == R.id.magazine) {
+                replaceFragment(new MagazineManagerFragment());
             }
             return true;
         });

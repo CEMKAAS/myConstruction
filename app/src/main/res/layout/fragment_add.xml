@@ -95,7 +95,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Цена"
-            app:helperText="Укажите кол-во цену за товар"
+            app:helperText="Укажите цену за ВЕСЬ товар"
             app:helperTextEnabled="true"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
