@@ -32,11 +32,12 @@
             android:layout_gravity="center"
             android:text="По категориям: " />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <TableLayout
+            android:id="@+id/table_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+        </TableLayout>
 
         <TextView
             style="@style/TextAppearance.MyApp.DisplaySmall3"
@@ -48,22 +49,12 @@
             android:layout_gravity="center"
             android:text="По продукции: " />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewAll"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <ImageView
-            android:id="@+id/empty_imageview"
-            android:layout_width="wrap_content"
+        <TableLayout
+            android:id="@+id/table_product"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="230dp"
-            android:alpha="0.1"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_gravity="center">
+        </TableLayout>
 
         <TextView
             android:id="@+id/no_data"

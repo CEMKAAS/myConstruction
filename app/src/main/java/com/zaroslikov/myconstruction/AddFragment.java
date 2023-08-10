@@ -131,6 +131,7 @@ public class AddFragment extends Fragment {
         productName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //ToDO Сделать все красиво
                 String productClick = productList.get(position).getName();
 
                 String suffixClick = productList.get(position).getSuffix();

@@ -67,8 +67,6 @@ public class AddProjectFragment extends Fragment {
             }
         });
 
-
-
         nameProject = layout.findViewById(R.id.name_project);
         dateProject = layout.findViewById(R.id.date);
 

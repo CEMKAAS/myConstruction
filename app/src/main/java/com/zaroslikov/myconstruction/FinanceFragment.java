@@ -8,10 +8,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -48,13 +51,15 @@ public class FinanceFragment extends Fragment {
     private Button buttonSheet;
     private TextInputLayout dataSheet;
     private BottomSheetDialog bottomSheetDialog;
+    private View layout;
+    private  TextView til;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
 
-        View layout = inflater.inflate(R.layout.fragment_finance, container, false);
+        layout = inflater.inflate(R.layout.fragment_finance, container, false);
         //убириаем фаб кнопку
         myDB = new MyDatabaseHelper(getActivity());
         ExtendedFloatingActionButton fab = (ExtendedFloatingActionButton) getActivity().findViewById(R.id.extended_fab);
@@ -107,17 +112,20 @@ public class FinanceFragment extends Fragment {
         //Создание модального bottomSheet
         showBottomSheetDialog();
 
-        // Настраиваем адаптер
-        recyclerViewCategory = layout.findViewById(R.id.recyclerView);
-        recyclerViewProduct = layout.findViewById(R.id.recyclerViewAll);
+        tableCategory();
+        tableProduct();
 
-        ProductAdapter productAdapterCategory = new ProductAdapter(categorySumListNow, true);
-        recyclerViewCategory.setAdapter(productAdapterCategory);
-        recyclerViewCategory.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        ProductAdapter productAdapterProduct = new ProductAdapter(productSumListNow, true);
-        recyclerViewProduct.setAdapter(productAdapterProduct);
-        recyclerViewProduct.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        // Настраиваем адаптер
+//        recyclerViewCategory = layout.findViewById(R.id.recyclerView);
+//        recyclerViewProduct = layout.findViewById(R.id.recyclerViewAll);
+//
+//        ProductAdapter productAdapterCategory = new ProductAdapter(categorySumListNow, true);
+//        recyclerViewCategory.setAdapter(productAdapterCategory);
+//        recyclerViewCategory.setLayoutManager(new LinearLayoutManager(getActivity()));
+//
+//        ProductAdapter productAdapterProduct = new ProductAdapter(productSumListNow, true);
+//        recyclerViewProduct.setAdapter(productAdapterProduct);
+//        recyclerViewProduct.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         // Настройка календаря на период
         CalendarConstraints constraintsBuilder = new CalendarConstraints.Builder()
@@ -172,13 +180,16 @@ public class FinanceFragment extends Fragment {
                 try {
                     filter();
 
-                    ProductAdapter productAdapterCategory = new ProductAdapter(categorySumListNow, true);
-                    recyclerViewCategory.setAdapter(productAdapterCategory);
-                    recyclerViewCategory.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-                    ProductAdapter productAdapterProduct = new ProductAdapter(productSumListNow, true);
-                    recyclerViewProduct.setAdapter(productAdapterProduct);
-                    recyclerViewProduct.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    tableCategory();
+                    tableProduct();
+//                    ProductAdapter productAdapterCategory = new ProductAdapter(categorySumListNow, true);
+//                    recyclerViewCategory.setAdapter(productAdapterCategory);
+//                    recyclerViewCategory.setLayoutManager(new LinearLayoutManager(getActivity()));
+//
+//                    ProductAdapter productAdapterProduct = new ProductAdapter(productSumListNow, true);
+//                    recyclerViewProduct.setAdapter(productAdapterProduct);
+//                    recyclerViewProduct.setLayoutManager(new LinearLayoutManager(getActivity()));
 
                     bottomSheetDialog.dismiss();
 
@@ -303,6 +314,69 @@ public class FinanceFragment extends Fragment {
         dataSheet = bottomSheetDialog.findViewById(R.id.data_sheet);
         buttonSheet = bottomSheetDialog.findViewById(R.id.button_sheet);
     }
+
+
+    public void tableCategory() {
+        TableLayout tableLayout = (TableLayout) layout.findViewById(R.id.table_category);
+        int rowI = 0;
+        for (Product product : categorySumListNow) {
+            TableRow tableRow = new TableRow(getActivity());
+            tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
+                    TableRow.LayoutParams.WRAP_CONTENT));
+            tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+            for (int i = 0; i <= 2; i++) {
+                til = new TextView(getActivity());
+                switch (i) {
+                    case 0:
+                        til.setText(product.getName()+ "  ");
+                        tableRow.addView(til, i);
+                        break;
+                    case 1:
+                        til.setText(String.valueOf(product.getPrice()));
+                        tableRow.addView(til, i);
+                        break;
+                    case 2:
+                        til.setText("  ₽");
+                        tableRow.addView(til, i);
+                        break;
+                }
+            }
+            tableLayout.addView(tableRow, rowI);
+            rowI++;
+        }
+    }
+
+    public void tableProduct() {
+        TableLayout tableLayout = (TableLayout) layout.findViewById(R.id.table_product          );
+        int rowI = 0;
+        for (Product product : productSumListNow) {
+            TableRow tableRow = new TableRow(getActivity());
+            tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
+                    TableRow.LayoutParams.WRAP_CONTENT));
+            tableRow.setGravity(Gravity.CENTER_HORIZONTAL);
+            for (int i = 0; i <= 2; i++) {
+                til = new TextView(getActivity());
+                switch (i) {
+                    case 0:
+                        til.setText(product.getName()+ "  ");
+                        tableRow.addView(til, i);
+                        break;
+                    case 1:
+                        til.setText(String.valueOf(product.getPrice()));
+                        tableRow.addView(til, i);
+                        break;
+                    case 2:
+                        til.setText("  ₽");
+                        tableRow.addView(til, i);
+                        break;
+                }
+            }
+            tableLayout.addView(tableRow, rowI);
+            rowI++;
+        }
+    }
+
+
 
 
 }
